@@ -3,6 +3,7 @@ from norman_objects.services.authenticate.login.api_key_login_request import Api
 from norman_objects.services.authenticate.login.email_password_login_request import EmailPasswordLoginRequest
 from norman_objects.services.authenticate.login.login_response import LoginResponse
 from norman_objects.services.authenticate.login.name_password_login_request import NamePasswordLoginRequest
+
 from norman_core.utils.api_client import ApiClient
 
 
@@ -33,11 +34,10 @@ class Login:
         return LoginResponse.model_validate(response)
 
     @staticmethod
-    async def login_email_otp(api_client: ApiClient, email: str = (...)): # Body ?
-        response = await api_client.post("authenticate/login/email/otp", json={"email": email})
-        return LoginResponse.model_validate(response)
+    async def login_email_otp(api_client: ApiClient, email: str):
+        await api_client.post("authenticate/login/email/otp", json={"email": email})
 
     @staticmethod
-    async def verify_email_otp(api_client: ApiClient, email: str, code: str): # ?
+    async def verify_email_otp(api_client: ApiClient, email: str, code: str):
         response = await api_client.post("authenticate/login/email/otp/verify", json={"email": email, "code": code})
         return LoginResponse.model_validate(response)

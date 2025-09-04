@@ -3,7 +3,6 @@ import random
 from pathlib import Path
 from time import time
 from typing import Optional, Final, cast
-from typing_extensions import Literal
 
 import aiofiles
 import pytest
@@ -25,8 +24,9 @@ from norman_objects.shared.signatures.http_location import HttpLocation
 from norman_objects.shared.signatures.model_signature import ModelSignature
 from norman_objects.shared.signatures.receive_format import ReceiveFormat
 from norman_objects.shared.signatures.signature_type import SignatureType
-from norman_utils_external.streaming_utils import StreamingUtils, AsyncBufferedReader
+from norman_utils_external.streaming_utils import StreamingUtils
 from norman_utils_external.uuid_utils import UUIDUtils
+from typing_extensions import Literal
 from xxhash import xxh3_64
 
 from norman_core._app_config import AppConfig

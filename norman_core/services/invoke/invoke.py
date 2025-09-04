@@ -1,7 +1,7 @@
+from norman_objects.services.invoke.invocation_config import InvocationConfig
 from norman_objects.shared.invocations.invocation import Invocation
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_objects.services.invoke.invocation_config import InvocationConfig
 from norman_core.utils.api_client import ApiClient
 from norman_core.utils.api_client.objects.request_kwargs import FileStream
 

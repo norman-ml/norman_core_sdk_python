@@ -1,6 +1,6 @@
-# Norman SDK
+# Norman Core SDK
 
-A Python SDK for Norman, providing modules for authentication, model registration, and model invocation.
+A Python Low Level SDK for Norman, providing access to the entire Norman Api.
 
 ## Package Structure
 
@@ -21,5 +21,5 @@ pip install .
 ## Test
 ```
 # low level test:
-pytest tests/low_level/<test_file_name> -v 
+pytest # -v = verbose, -s = show prints 
 ```
