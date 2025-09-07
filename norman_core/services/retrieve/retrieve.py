@@ -9,7 +9,7 @@ class Retrieve:
         file_data = await api_client.get(
             f"retrieve/asset/{account_id}/{model_id}/{asset_id}",
             token,
-            response_encoding=ResponseEncoding.BYTES
+            response_encoding=ResponseEncoding.Bytes
         )
         return file_data
 
@@ -18,7 +18,7 @@ class Retrieve:
         file_data = await api_client.get(
             f"retrieve/input/{account_id}/{model_id}/{invocation_id}/{input_id}",
             token,
-            response_encoding=ResponseEncoding.BYTES
+            response_encoding=ResponseEncoding.Bytes
         )
         return file_data
 
@@ -27,6 +27,6 @@ class Retrieve:
         file_data = await api_client.get(
             f"retrieve/output/{account_id}/{model_id}/{invocation_id}/{output_id}",
             token,
-            response_encoding=ResponseEncoding.BYTES
+            response_encoding=ResponseEncoding.Bytes
         )
         return file_data

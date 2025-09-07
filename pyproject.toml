@@ -5,15 +5,15 @@ description = "Norman SDK"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+    "norman_objects @ git+https://github.com/norman-ml/norman_objects.git",
+    "norman_utils_external @ git+https://github.com/norman-ml/norman_utils_external.git",
+
+    "aiofiles==24.1.0",
     "httpx==0.28.1",
     "pydantic==2.11.7",
-    "xxhash==3.5.0",
-    "aiofiles==24.1.0",
-    "pycryptodome==3.23.0",
     "pytest==8.4.1",
     "pytest-asyncio==1.1.0",
-    "norman_utils_external @ git+ssh://git@ssh.github.com:443/norman-ml/norman_utils_external.git@86c59rfwq/tooling/split-utils",
-    "norman_objects @ git+ssh://git@ssh.github.com:443/norman-ml/norman_objects.git@86c59h7t5/libraries/io-objects"
+    "xxhash==3.5.0"
 ]
 
 [build-system]

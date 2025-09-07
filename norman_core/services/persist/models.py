@@ -12,33 +12,53 @@ from norman_core.utils.api_client import ApiClient
 
 class Models:
     @staticmethod
-    async def get_models(api_client: ApiClient, token: Sensitive[str] ,request: Optional[GetModelsRequest] = None):
+    async def get_models(api_client: ApiClient, token: Sensitive[str], request: Optional[GetModelsRequest] = None):
         if request is None:
             request = GetModelsRequest(constraints=None, finished_models=True)
-        response = await api_client.post("persist/models/get", token, json=request.model_dump(mode="json"))
+        json = request.model_dump(mode="json")
+
+        response = await api_client.post("persist/models/get", token, json=json)
         return TypeAdapter(list[Model]).validate_python(response)
 
     @staticmethod
-    async def create_models(api_client: ApiClient, token: Sensitive[str] ,models: list[Model]):
-        response = await api_client.post("persist/models/", token, json=TypeAdapter(list[Model]).dump_python(models, mode="json"))
+    async def create_models(api_client: ApiClient, token: Sensitive[str], models: list[Model]):
+        json = None
+        if models is not None:
+            json = TypeAdapter(list[Model]).dump_python(models, mode="json")
+
+        response = await api_client.post("persist/models/", token, json=json)
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
     async def upgrade_models(api_client: ApiClient, token: Sensitive[str] ,models: list[Model]):
-        response = await api_client.post("persist/models/version", token, json=TypeAdapter(list[Model]).dump_python(models, mode="json"))
+        json = None
+        if models is not None:
+            json = TypeAdapter(list[Model]).dump_python(models, mode="json")
+
+        response = await api_client.post("persist/models/version", token, json=json)
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
-    async def update_models(api_client: ApiClient, token: Sensitive[str] ,models: list[Model]):
-        response = await api_client.patch("persist/models/", token, json=TypeAdapter(list[Model]).dump_python(models, mode="json"))
+    async def update_models(api_client: ApiClient, token: Sensitive[str], models: list[Model]):
+        json = None
+        if models is not None:
+            json = TypeAdapter(list[Model]).dump_python(models, mode="json")
+
+        response = await api_client.patch("persist/models/", token, json=json)
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
     async def set_active_model(api_client: ApiClient, token: Sensitive[str] ,model_previews: list[ModelPreview]):
-        response = await api_client.patch("persist/models/version", token, json=TypeAdapter(list[ModelPreview]).dump_python(model_previews, mode="json"))
+        json = None
+        if model_previews is not None:
+            json = TypeAdapter(list[ModelPreview]).dump_python(model_previews, mode="json")
+
+        response = await api_client.patch("persist/models/version", token, json=json)
         return TypeAdapter(list[ModelPreview]).validate_python(response)
 
     @staticmethod
     async def delete_models(api_client: ApiClient, token: Sensitive[str] ,constraints: QueryConstraints):
-        response: int = await api_client.delete("persist/models/", token, json=constraints.model_dump())
+        json = constraints.model_dump()
+
+        response: int = await api_client.delete("persist/models/", token, json=json)
         return response

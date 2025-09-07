@@ -16,15 +16,21 @@ class FilePull:
 
     @staticmethod
     async def submit_asset_links(api_client: ApiClient, token: Sensitive[str], download_request: AssetDownloadRequest):
-        response = await api_client.post("file-pull/upload/assets", token, json=download_request.model_dump(mode="json"))
+        json = download_request.model_dump(mode="json")
+
+        response = await api_client.post("file-pull/upload/assets", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)
 
     @staticmethod
     async def submit_input_links(api_client: ApiClient, token: Sensitive[str], download_request: InputDownloadRequest):
-        response = await api_client.post("file-pull/upload/inputs", token, json=download_request.model_dump(mode="json"))
+        json = download_request.model_dump(mode="json")
+
+        response = await api_client.post("file-pull/upload/inputs", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)
 
     @staticmethod
     async def submit_output_links(api_client: ApiClient, token: Sensitive[str], download_request: OutputDownloadRequest):
-        response = await api_client.post("file-pull/upload/outputs", token, json=download_request.model_dump(mode="json"))
+        json = download_request.model_dump(mode="json")
+
+        response = await api_client.post("file-pull/upload/outputs", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)

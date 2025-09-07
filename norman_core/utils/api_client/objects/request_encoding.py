@@ -1,6 +1,6 @@
 from enum import Enum
 
 class RequestEncoding(Enum):
-    BYTES = "bytes"
-    JSON = "json"
-    TEXT = "text"
+    Bytes = "bytes"
+    Json = "json"
+    Text = "text"

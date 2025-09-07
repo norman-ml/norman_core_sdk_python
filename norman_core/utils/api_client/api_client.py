@@ -1,5 +1,4 @@
-import asyncio
-from typing import Optional, Union
+from typing import Optional
 
 import httpx
 from norman_objects.shared.security.sensitive import Sensitive
@@ -12,79 +11,69 @@ from norman_core.utils.api_client.objects.response_encoding import ResponseEncod
 
 class ApiClient:
     def __init__(self, base_url: Optional[str] = None, timeout: Optional[float] = None):
+        if base_url is None:
+            base_url = AppConfig.http.base_url
+        if timeout is None:
+            timeout = AppConfig.http.timeout_seconds
+
+        self._headers = {
+            "Content-Type": "application/json"
+        }
+
         self._client = httpx.AsyncClient(
-            base_url=base_url or AppConfig.http.base_url,
-            timeout=timeout or AppConfig.http.timeout,
-            headers={"Content-Type": "application/json"}
+            base_url=base_url,
+            timeout=timeout
         )
 
-    async def get(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.JSON, **kwargs: Unpack[RequestKwargs]):
-        headers = self.create_headers(token)
+    async def get(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+        headers = self._create_headers(token)
 
         response = await self._client.get(endpoint, headers=headers, **kwargs)
         return self._parse_response(response, response_encoding)
 
-    async def post(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.JSON, **kwargs: Unpack[RequestKwargs]):
-        headers = self.create_headers(token)
+    async def post(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+        headers = self._create_headers(token)
 
-        response = await self._client.post(endpoint, headers=headers, **kwargs)
+        response = await self._client.request("POST", endpoint, headers=headers, **kwargs)
         return self._parse_response(response, response_encoding)
 
-    async def put(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.JSON, **kwargs: Unpack[RequestKwargs]):
-        headers = self.create_headers(token)
+    async def put(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+        headers = self._create_headers(token)
 
-        response = await self._client.put(endpoint, headers=headers, **kwargs)
+        response = await self._client.request("PUT", endpoint, headers=headers, **kwargs)
         return self._parse_response(response, response_encoding)
 
-    async def patch(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.JSON, **kwargs: Unpack[RequestKwargs]):
-        headers = self.create_headers(token)
+    async def patch(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+        headers = self._create_headers(token)
 
-        response = await self._client.patch(endpoint, headers=headers, **kwargs)
+        response = await self._client.request("PATCH", endpoint, headers=headers, **kwargs)
         return self._parse_response(response, response_encoding)
 
-    async def delete(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.JSON, **kwargs: Unpack[RequestKwargs]):
-        headers = self.create_headers(token)
+    async def delete(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+        headers = self._create_headers(token)
 
         response = await self._client.request("DELETE", endpoint, headers=headers, **kwargs)
         return self._parse_response(response, response_encoding)
 
-    async def post_multipart(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.JSON, **kwargs: Unpack[RequestKwargs]):
-        headers = self.create_headers(token)
+    async def post_multipart(self, endpoint: str, token: Sensitive[str], *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+        headers = {
+            "Authorization": f"Bearer {token.value()}",
+        }
 
         data = kwargs.get("data", {})
         files = kwargs.get("files", {})
-        boundary = "----NormanBoundary"
-        content_type = f"multipart/form-data; boundary={boundary}"
-        headers["Content-Type"] = content_type
 
-        # Construct multipart payload
-        parts: list[Union[str, bytes]] = []
-        for key, value in data.items():
-            parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{value}\r\n')
-        for filename, (file_obj, file_content_type) in files.items():
-            parts.append(
-                f'--{boundary}\r\nContent-Disposition: form-data; name="{filename}"; filename="{filename}"\r\n'
-                f'Content-Type: {file_content_type}\r\n\r\n'
-            )
-            if hasattr(file_obj, "read"):
-                if asyncio.iscoroutinefunction(file_obj.read):
-                    parts.append(await file_obj.read())
-                else:
-                    parts.append(file_obj.read())
-            else:
-                parts.append(file_obj)
-            parts.append(b"\r\n" if isinstance(parts[-1], bytes) else "\r\n")
-        parts.append(f"--{boundary}--\r\n")
-
-        content = b""
-        for part in parts:
-            content += part.encode("utf-8") if isinstance(part, str) else part
-
-        response = await self._client.post(endpoint, headers=headers, content=content)
+        response = await self._client.request(
+            "POST",
+            endpoint,
+            headers=headers,
+            data=data,
+            files=files
+        )
         return self._parse_response(response, response_encoding)
 
-    def create_headers(self, token: Optional[Sensitive[str]]):
-        headers = self._client.headers.copy()
+    def _create_headers(self, token: Optional[Sensitive[str]]):
+        headers = self._headers.copy()
         if token is not None:
             headers["Authorization"] = f"Bearer {token.value()}"
         return headers
@@ -93,11 +82,11 @@ class ApiClient:
     def _parse_response(response: httpx.Response, response_encoding: ResponseEncoding):
         response.raise_for_status()
 
-        if response_encoding == ResponseEncoding.JSON:
+        if response_encoding == ResponseEncoding.Json:
             return response.json()
-        if response_encoding == ResponseEncoding.TEXT:
+        if response_encoding == ResponseEncoding.Text:
             return response.text
-        if response_encoding == ResponseEncoding.BYTES:
+        if response_encoding == ResponseEncoding.Bytes:
             return response.content
         raise ValueError(f"Invalid response encoding: {response_encoding}")
 

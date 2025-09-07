@@ -13,5 +13,7 @@ class ModelBases:
     async def get_model_bases(api_client: ApiClient, token: Sensitive[str], request: Optional[GetModelsRequest] = None):
         if request is None:
             request = GetModelsRequest(constraints=None, finished_models=True)
-        response = await api_client.post("persist/models/bases/get", token, json=request.model_dump(mode="json"))
+        json = request.model_dump(mode="json")
+
+        response = await api_client.post("persist/models/bases/get", token, json=json)
         return TypeAdapter(list[ModelBase]).validate_python(response)

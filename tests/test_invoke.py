@@ -11,8 +11,7 @@ from norman_objects.shared.security.sensitive import Sensitive
 from xxhash import xxh3_64
 
 from norman_core.services.invoke.invoke import Invoke
-from norman_core.services.persist.invocation_flags import InvocationFlags
-from norman_core.services.persist.models import Models
+from norman_core.services.persist import Persist
 from norman_core.services.retrieve.retrieve import Retrieve
 from norman_core.utils.api_client import ApiClient
 from tests.test_utils import get_flags_loop, api_client_logged_in
@@ -35,7 +34,7 @@ async def test_invoke_text(api_client_logged_in):
         constraints=None,
         finished_models=True
     )
-    models = await Models.get_models(api_client, login_response.access_token, get_models_request)
+    models = await Persist.models.get_models(api_client, login_response.access_token, get_models_request)
     for model in models:
         if (
             len(model.inputs) == 1 and
@@ -76,7 +75,7 @@ async def test_invocation_flags(api_client_logged_in):
 
     async def get_invocation_flags():
         invocation_constraints = QueryConstraints.equals("Invocation_Flags", "Entity_ID", invocation.id)
-        results = await InvocationFlags.get_invocation_status_flags(api_client, login_response.access_token, invocation_constraints)
+        results = await Persist.invocation_flags.get_invocation_status_flags(api_client, login_response.access_token, invocation_constraints)
         return {
             "Invocation": results[invocation.id]
         }
@@ -101,8 +100,9 @@ async def test_get_text_results(api_client_logged_in):
 @pytest.mark.asyncio
 async def test_invoke_image(api_client_logged_in):
     api_client, login_response = api_client_logged_in
+    _globals["invocation"] = None
 
-    models = await Models.get_models(api_client, login_response.access_token)
+    models = await Persist.models.get_models(api_client, login_response.access_token)
 
     for model in models:
         if (
@@ -112,7 +112,6 @@ async def test_invoke_image(api_client_logged_in):
             break
     else:
         warnings.warn("No model with input 'image' found")
-        _globals["invocation"] = None
         return
     invocation_config = InvocationConfig(
         account_id=login_response.account.id,

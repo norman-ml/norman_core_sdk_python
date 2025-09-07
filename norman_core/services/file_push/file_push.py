@@ -3,7 +3,7 @@ import base64
 import contextlib
 from typing import AsyncGenerator
 
-from Crypto.Cipher import ChaCha20
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
 from norman_objects.services.file_push.checksum.checksum_request import ChecksumRequest
 from norman_objects.services.file_push.pairing.socket_asset_pairing_request import SocketAssetPairingRequest
 from norman_objects.services.file_push.pairing.socket_input_pairing_request import SocketInputPairingRequest
@@ -32,24 +32,34 @@ class FilePush:
 
     @staticmethod
     async def write_file(socket_info: SocketPairingResponse, file_stream: AsyncGenerator[bytes]):
-        key_bytes = base64.b64decode(socket_info.encryption_key)
         authentication_header = base64.b64decode(socket_info.authentication_header)
-        base_nonce12 = base64.b64decode(socket_info.nonce)
-
-        cipher = ChaCha20.new(key=key_bytes, nonce=base_nonce12)
+        encryptor = FilePush._create_encryptor(socket_info)
 
         body_stream = StreamingUtils.chain_streams([authentication_header], file_stream)
 
-        _, client_socket = await asyncio.open_connection(socket_info.host, socket_info.port)
+        stream_reader, stream_writer = await asyncio.open_connection(socket_info.host, socket_info.port)
         try:
             async for chunk in body_stream:
-                encrypted = cipher.encrypt(chunk)
-                client_socket.write(encrypted)
-                if client_socket.transport.get_write_buffer_size() >= AppConfig.io.flush_size:
-                    await client_socket.drain()
-                await client_socket.drain()
+                encrypted = encryptor.update(chunk)
+                stream_writer.write(encrypted)
+                if stream_writer.transport.get_write_buffer_size() >= AppConfig.io.flush_size:
+                    await stream_writer.drain()
+                await stream_writer.drain()
                 yield chunk
         finally:
-            client_socket.close()
+            stream_writer.close()
             with contextlib.suppress(ConnectionResetError):
-                await client_socket.wait_closed()
+                await stream_writer.wait_closed()
+
+    @staticmethod
+    def _create_encryptor(pairing_response: SocketPairingResponse):
+        key_bytes = base64.b64decode(pairing_response.encryption_key)
+        base_nonce12 = base64.b64decode(pairing_response.nonce)
+
+        counter_nonce4 = (0).to_bytes(4, "little")
+        full_nonce16 = counter_nonce4 + base_nonce12
+
+        cypher =  Cipher(algorithms.ChaCha20(key_bytes, full_nonce16), mode=None)
+        encryptor = cypher.encryptor()
+
+        return encryptor
