@@ -10,7 +10,7 @@ from norman_core.utils.api_client.objects.request_kwargs import RequestKwargs
 from norman_core.utils.api_client.objects.response_encoding import ResponseEncoding
 
 
-class ApiClient:
+class HttpClient:
     def __init__(self, base_url: Optional[str] = None, timeout: Optional[float] = None):
         if base_url is None:
             base_url = AppConfig.http.base_url

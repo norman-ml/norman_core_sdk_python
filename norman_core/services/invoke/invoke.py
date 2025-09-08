@@ -5,13 +5,13 @@ from norman_objects.services.invoke.invocation_config import InvocationConfig
 from norman_objects.shared.invocations.invocation import Invocation
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.utils.api_client import ApiClient
+from norman_core.utils.api_client import HttpClient
 from norman_core.utils.api_client.objects.request_kwargs import FileStream
 
 
 class Invoke:
     @staticmethod
-    async def invoke_model(api_client: ApiClient, token: Sensitive[str], invocation_config: InvocationConfig, model_files: Optional[dict[str, FileStream]] = None):
+    async def invoke_model(http_client: HttpClient, token: Sensitive[str], invocation_config: InvocationConfig, model_files: Optional[dict[str, FileStream]] = None):
         data = {
             "invocation_config": invocation_config.model_dump_json()
         }
@@ -23,5 +23,5 @@ class Invoke:
                     file_stream = await file_stream.read()
                 files[file_name] = (file_name, file_stream, "application/octet-stream")
 
-        response = await api_client.post_multipart("invoke/model", token, data=data, files=files)
+        response = await http_client.post_multipart("invoke/model", token, data=data, files=files)
         return Invocation.model_validate(response)

@@ -34,8 +34,9 @@ from norman_core.services.file_push.file_push import FilePush
 from norman_core.services.persist.model_bases import ModelBases
 from norman_core.services.persist.model_flags import ModelFlags
 from norman_core.services.persist.models import Models
-from norman_core.utils.api_client import ApiClient
-from tests.test_utils import api_client_logged_in, get_flags_loop, upload_progress_indicator
+from norman_core.utils.api_client import HttpClient
+from norman_core.utils.api_client import SocketClient
+from tests.test_utils import http_client_logged_in, get_flags_loop, upload_progress_indicator
 
 email = "avremy.back@norman-ai.com"
 password = "Avremy123!"
@@ -49,8 +50,8 @@ _globals: Final = {
 }
 
 @pytest.mark.asyncio
-async def test_upload_model(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_upload_model(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     model = create_model(login_response.account, ModelType.Pytorch_jit)
 
@@ -79,34 +80,34 @@ async def test_upload_model(api_client_logged_in):
         )
     )
 
-    created_model = await Models.create_models(api_client, login_response.access_token, [model])
+    created_model = await Models.create_models(http_client, login_response.access_token, [model])
 
     assert isinstance(created_model, dict) and isinstance(created_model[model.id], Model)
 
     _globals["model"] = created_model[model.id]
 
 @pytest.mark.asyncio
-async def test_upload_model_logo(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_upload_model_logo(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     model = _globals["model"]
     assert isinstance(model, Model)
 
-    await upload_model_asset(api_client, login_response.access_token, model, "Logo")
+    await upload_model_asset(http_client, login_response.access_token, model, "Logo")
 
 @pytest.mark.asyncio
-async def test_upload_model_file(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_upload_model_file(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     model = _globals["model"]
     assert isinstance(model, Model)
 
-    await upload_model_asset(api_client, login_response.access_token, model, "File", Path(text_model_path))
+    await upload_model_asset(http_client, login_response.access_token, model, "File", Path(text_model_path))
 
 @pytest.mark.slow
 @pytest.mark.asyncio
-async def test_model_flags(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_model_flags(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     model = _globals["model"]
     assert isinstance(model, Model)
@@ -118,8 +119,8 @@ async def test_model_flags(api_client_logged_in):
         model_flag_constraints = QueryConstraints.equals("Model_Flags", "Entity_ID", model.id)
         asset_flag_constraints = QueryConstraints.includes("Asset_Flags", "Entity_ID", [file_asset.id, logo_asset.id])
 
-        model_flag_task = ModelFlags.get_model_status_flags(api_client, login_response.access_token, model_flag_constraints)
-        asset_flag_task = ModelFlags.get_asset_status_flags(api_client, login_response.access_token, asset_flag_constraints)
+        model_flag_task = ModelFlags.get_model_status_flags(http_client, login_response.access_token, model_flag_constraints)
+        asset_flag_task = ModelFlags.get_asset_status_flags(http_client, login_response.access_token, asset_flag_constraints)
 
         results = await asyncio.gather(model_flag_task, asset_flag_task)
         logo_flags = results[1][logo_asset.id]
@@ -138,8 +139,8 @@ async def test_model_flags(api_client_logged_in):
 
 @pytest.mark.upgrade
 @pytest.mark.asyncio
-async def test_upgrade_model(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_upgrade_model(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     model = _globals["model"]
     assert isinstance(model, Model)
@@ -168,37 +169,37 @@ async def test_upgrade_model(api_client_logged_in):
         )
     ]
 
-    created_model = await Models.upgrade_models(api_client, login_response.access_token, [model])
+    created_model = await Models.upgrade_models(http_client, login_response.access_token, [model])
     assert isinstance(created_model, dict) and isinstance(created_model[model.id], Model)
     _globals["model"] = created_model[model.id]
 
 @pytest.mark.upgrade
 @pytest.mark.asyncio
-async def test_upload_model_logo_upgrade(api_client_logged_in):
-    await test_upload_model_logo(api_client_logged_in)
+async def test_upload_model_logo_upgrade(http_client_logged_in):
+    await test_upload_model_logo(http_client_logged_in)
 
 @pytest.mark.upgrade
 @pytest.mark.asyncio
-async def test_upload_model_file_upgrade(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_upload_model_file_upgrade(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     model = _globals["model"]
     assert isinstance(model, Model)
 
-    await upload_model_asset(api_client, login_response.access_token, model, "File", Path(image_model_path))
+    await upload_model_asset(http_client, login_response.access_token, model, "File", Path(image_model_path))
 
 @pytest.mark.upgrade
 @pytest.mark.slow
 @pytest.mark.asyncio
-async def test_model_flags_upgrade(api_client_logged_in):
-    await test_model_flags(api_client_logged_in)
+async def test_model_flags_upgrade(http_client_logged_in):
+    await test_model_flags(http_client_logged_in)
 
 # marked as slow because it requires model images to be fully finished
 @pytest.mark.upgrade
 @pytest.mark.slow
 @pytest.mark.asyncio
-async def test_set_active_model(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_set_active_model(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     base_id = _globals["model"].model_base_id
 
@@ -206,14 +207,14 @@ async def test_set_active_model(api_client_logged_in):
         constraints=QueryConstraints.equals("Model_Bases", "ID", base_id),
         finished_models=True
     )
-    model_bases = await ModelBases.get_model_bases(api_client, login_response.access_token, get_models_request)
+    model_bases = await ModelBases.get_model_bases(http_client, login_response.access_token, get_models_request)
     assert len(model_bases) == 1, "Expected model base"
 
     previews = model_bases[0].model_previews
     assert len(previews) == 2, "Expected two model versions"
     v1_preview = next(preview for preview in previews if preview.version_label == "v1.0")
 
-    await Models.set_active_model(api_client, login_response.access_token, [v1_preview])
+    await Models.set_active_model(http_client, login_response.access_token, [v1_preview])
 
 def create_model(account: Account, model_type: ModelType) -> Model:
     model =  Model(
@@ -282,7 +283,7 @@ def create_model_signature(
     signature.parameters.append(param)
     return signature
 
-async def upload_model_asset(api_client: ApiClient, token: Sensitive[str], model: Model, asset_name: Literal["Logo", "File"], asset_path: Path = None):
+async def upload_model_asset(http_client: HttpClient, token: Sensitive[str], model: Model, asset_name: Literal["Logo", "File"], asset_path: Path = None):
     asset_path = get_random_model_logo() if asset_path is None else asset_path
     asset_file_size = asset_path.stat().st_size
     asset_stream = await aiofiles.open(asset_path, "rb")
@@ -296,15 +297,15 @@ async def upload_model_asset(api_client: ApiClient, token: Sensitive[str], model
         file_size_in_bytes=asset_file_size
     )
 
-    pairing_response = await FilePush.allocate_socket_for_asset(api_client, token, pairing_request)
+    pairing_response = await FilePush.allocate_socket_for_asset(http_client, token, pairing_request)
 
-    hash_stream = xxh3_64()
-    body_stream = StreamingUtils.process_read_stream(asset_stream, hash_stream.update, AppConfig.io.chunk_size, False)
 
     progress_indicator = upload_progress_indicator(asset_file_size)
     next(progress_indicator)
 
-    async for chunk in FilePush.write_file(pairing_response, body_stream):
+    hash_stream = xxh3_64()
+    body_stream = StreamingUtils.process_read_stream(asset_stream, hash_stream.update, AppConfig.io.chunk_size, False)
+    async for chunk in SocketClient.write(pairing_response, body_stream):
         progress_indicator.send(len(chunk))
 
     progress_indicator.close()
@@ -317,7 +318,7 @@ async def upload_model_asset(api_client: ApiClient, token: Sensitive[str], model
         pairing_id=pairing_response.pairing_id
     )
 
-    await FilePush.complete_file_transfer(api_client, token, checksum_request)
+    await FilePush.complete_file_transfer(http_client, token, checksum_request)
 
 def get_random_model_logo() -> Path:
     root_path = Path("./tests/samples/model_logos/")

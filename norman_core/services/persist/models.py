@@ -7,58 +7,58 @@ from norman_objects.shared.requests.get_models_request import GetModelsRequest
 from norman_objects.shared.security.sensitive import Sensitive
 from pydantic import TypeAdapter
 
-from norman_core.utils.api_client import ApiClient
+from norman_core.utils.api_client import HttpClient
 
 
 class Models:
     @staticmethod
-    async def get_models(api_client: ApiClient, token: Sensitive[str], request: Optional[GetModelsRequest] = None):
+    async def get_models(http_client: HttpClient, token: Sensitive[str], request: Optional[GetModelsRequest] = None):
         if request is None:
             request = GetModelsRequest(constraints=None, finished_models=True)
         json = request.model_dump(mode="json")
 
-        response = await api_client.post("persist/models/get", token, json=json)
+        response = await http_client.post("persist/models/get", token, json=json)
         return TypeAdapter(list[Model]).validate_python(response)
 
     @staticmethod
-    async def create_models(api_client: ApiClient, token: Sensitive[str], models: list[Model]):
+    async def create_models(http_client: HttpClient, token: Sensitive[str], models: list[Model]):
         json = None
         if models is not None:
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
 
-        response = await api_client.post("persist/models/", token, json=json)
+        response = await http_client.post("persist/models/", token, json=json)
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
-    async def upgrade_models(api_client: ApiClient, token: Sensitive[str], models: list[Model]):
+    async def upgrade_models(http_client: HttpClient, token: Sensitive[str], models: list[Model]):
         json = None
         if models is not None:
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
 
-        response = await api_client.post("persist/models/version", token, json=json)
+        response = await http_client.post("persist/models/version", token, json=json)
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
-    async def replace_models(api_client: ApiClient, token: Sensitive[str], models: list[Model]):
+    async def replace_models(http_client: HttpClient, token: Sensitive[str], models: list[Model]):
         json = None
         if models is not None:
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
 
-        response = await api_client.patch("persist/models/", token, json=json)
+        response = await http_client.patch("persist/models/", token, json=json)
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
-    async def set_active_model(api_client: ApiClient, token: Sensitive[str], model_previews: list[ModelPreview]):
+    async def set_active_model(http_client: HttpClient, token: Sensitive[str], model_previews: list[ModelPreview]):
         json = None
         if model_previews is not None:
             json = TypeAdapter(list[ModelPreview]).dump_python(model_previews, mode="json")
 
-        response = await api_client.patch("persist/models/version", token, json=json)
+        response = await http_client.patch("persist/models/version", token, json=json)
         return TypeAdapter(list[ModelPreview]).validate_python(response)
 
     @staticmethod
-    async def delete_models(api_client: ApiClient, token: Sensitive[str], constraints: QueryConstraints):
+    async def delete_models(http_client: HttpClient, token: Sensitive[str], constraints: QueryConstraints):
         json = constraints.model_dump()
 
-        response: int = await api_client.delete("persist/models/", token, json=json)
+        response: int = await http_client.delete("persist/models/", token, json=json)
         return response

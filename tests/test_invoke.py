@@ -13,8 +13,8 @@ from xxhash import xxh3_64
 from norman_core.services.invoke.invoke import Invoke
 from norman_core.services.persist import Persist
 from norman_core.services.retrieve.retrieve import Retrieve
-from norman_core.utils.api_client import ApiClient
-from tests.test_utils import get_flags_loop, api_client_logged_in
+from norman_core.utils.api_client import HttpClient
+from tests.test_utils import get_flags_loop, http_client_logged_in
 
 TEXT_INPUT: Final = "Hello, world!"
 image_input = "./tests/samples/model_logos/Delphi_logo.jpg"
@@ -27,14 +27,14 @@ _globals: Final = {
 }
 
 @pytest.mark.asyncio
-async def test_invoke_text(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_invoke_text(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     get_models_request = GetModelsRequest(
         constraints=None,
         finished_models=True
     )
-    models = await Persist.models.get_models(api_client, login_response.access_token, get_models_request)
+    models = await Persist.models.get_models(http_client, login_response.access_token, get_models_request)
     for model in models:
         if (
             len(model.inputs) == 1 and
@@ -59,14 +59,14 @@ async def test_invoke_text(api_client_logged_in):
     input_signature = model.inputs[0]
     invocation_config.model_primitives[input_signature.id] = TEXT_INPUT
 
-    response = await Invoke.invoke_model(api_client, login_response.access_token, invocation_config)
+    response = await Invoke.invoke_model(http_client, login_response.access_token, invocation_config)
 
     assert isinstance(response, Invocation)
     _globals["invocation"] = response
 
 @pytest.mark.asyncio
-async def test_invocation_flags(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_invocation_flags(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
 
     invocation = _globals["invocation"]
     if invocation is None:
@@ -75,7 +75,7 @@ async def test_invocation_flags(api_client_logged_in):
 
     async def get_invocation_flags():
         invocation_constraints = QueryConstraints.equals("Invocation_Flags", "Entity_ID", invocation.id)
-        results = await Persist.invocation_flags.get_invocation_status_flags(api_client, login_response.access_token, invocation_constraints)
+        results = await Persist.invocation_flags.get_invocation_status_flags(http_client, login_response.access_token, invocation_constraints)
         return {
             "Invocation": results[invocation.id]
         }
@@ -85,14 +85,14 @@ async def test_invocation_flags(api_client_logged_in):
     assert all_finished
 
 @pytest.mark.asyncio
-async def test_get_text_results(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_get_text_results(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
     invocation = _globals["invocation"]
     if invocation is None:
         warnings.warn("No invocation found")
         return
 
-    _, response_stream = await get_invoke_results(api_client, login_response.access_token, invocation)
+    _, response_stream = await get_invoke_results(http_client, login_response.access_token, invocation)
     response = bytearray()
     async for chunk in response_stream:
         response.extend(chunk)
@@ -100,11 +100,11 @@ async def test_get_text_results(api_client_logged_in):
     assert response.decode("utf-8") == TEXT_INPUT[::-1]
 
 @pytest.mark.asyncio
-async def test_invoke_image(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_invoke_image(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
     _globals["invocation"] = None
 
-    models = await Persist.models.get_models(api_client, login_response.access_token)
+    models = await Persist.models.get_models(http_client, login_response.access_token)
 
     for model in models:
         if (
@@ -128,7 +128,7 @@ async def test_invoke_image(api_client_logged_in):
     invocation_config.model_file_names.append(signature_id)
 
     file_stream = await aiofiles.open(image_input, "rb")
-    response = await Invoke.invoke_model(api_client, login_response.access_token, invocation_config, {
+    response = await Invoke.invoke_model(http_client, login_response.access_token, invocation_config, {
         signature_id: file_stream,
     })
     await file_stream.close()
@@ -139,8 +139,8 @@ async def test_invoke_image(api_client_logged_in):
 test_invocation_flags_image = test_invocation_flags
 
 @pytest.mark.asyncio
-async def test_get_image_results(api_client_logged_in):
-    api_client, login_response = api_client_logged_in
+async def test_get_image_results(http_client_logged_in):
+    http_client, login_response = http_client_logged_in
     invocation = _globals["invocation"]
     if invocation is None:
         warnings.warn("No invocation found")
@@ -148,7 +148,7 @@ async def test_get_image_results(api_client_logged_in):
 
     hash_stream = xxh3_64()
 
-    _, response_stream_handler = await get_invoke_results(api_client, login_response.access_token, invocation)
+    _, response_stream_handler = await get_invoke_results(http_client, login_response.access_token, invocation)
     async for chunk in response_stream_handler:
         hash_stream.update(chunk)
 
@@ -156,9 +156,9 @@ async def test_get_image_results(api_client_logged_in):
         hash_expected = xxh3_64(await file.read()).digest()
         assert hash_expected == hash_stream.digest()
 
-async def get_invoke_results(api_client: ApiClient, token: Sensitive[str], invocation: Invocation):
+async def get_invoke_results(http_client: HttpClient, token: Sensitive[str], invocation: Invocation):
     response = await Retrieve.get_invocation_output(
-        api_client,
+        http_client,
         token,
         invocation.account_id,
         invocation.model_id,
