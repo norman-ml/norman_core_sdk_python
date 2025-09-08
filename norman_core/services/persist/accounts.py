@@ -16,7 +16,7 @@ class Accounts:
             json = constraints.model_dump(mode="json")
 
         response = await http_client.post("persist/accounts/get", token, json=json)
-        return TypeAdapter(list[Account]).validate_python(response)
+        return TypeAdapter(dict[str, Account]).validate_python(response)
 
     @staticmethod
     async def create_accounts(http_client: HttpClient, token: Sensitive[str], accounts: list[Account]):
@@ -49,7 +49,7 @@ class Accounts:
         return affected_entities_count
 
     @staticmethod
-    async def delete_account(http_client: HttpClient, token: Sensitive[str], constraints: QueryConstraints):
+    async def delete_accounts(http_client: HttpClient, token: Sensitive[str], constraints: QueryConstraints):
         json = constraints.model_dump(mode="json")
 
         affected_entities_count: int = await http_client.delete("persist/accounts", token, json=json)

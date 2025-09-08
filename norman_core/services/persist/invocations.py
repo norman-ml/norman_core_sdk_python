@@ -16,7 +16,7 @@ class Invocations:
             json = constraints.model_dump(mode="json")
 
         response = await http_client.post("persist/invocations/get", token, json=json)
-        return TypeAdapter(list[Invocation]).validate_python(response)
+        return TypeAdapter(dict[str, Invocation]).validate_python(response)
 
     @staticmethod
     async def create_invocations(http_client: HttpClient, token: Sensitive[str], invocations: list[Invocation]):
@@ -32,4 +32,4 @@ class Invocations:
             json = constraints.model_dump(mode="json")
 
         response = await http_client.post("persist/invocation/history/get", token, json=json)
-        return TypeAdapter(list[Invocation]).validate_python(response)
+        return TypeAdapter(dict[str, Invocation]).validate_python(response)

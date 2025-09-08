@@ -22,7 +22,6 @@ class SocketClient:
 
         return hash_stream.hexdigest()
 
-
     @staticmethod
     async def write(socket_info: SocketPairingResponse, file_stream: AsyncGenerator[bytes]):
         authentication_header = base64.b64decode(socket_info.authentication_header)
@@ -52,7 +51,7 @@ class SocketClient:
         counter_nonce4 = (0).to_bytes(4, "little")
         full_nonce16 = counter_nonce4 + base_nonce12
 
-        cypher = Cipher(algorithms.ChaCha20(key_bytes, full_nonce16), mode=None)
-        encryptor = cypher.encryptor()
+        cipher = Cipher(algorithms.ChaCha20(key_bytes, full_nonce16), mode=None)
+        encryptor = cipher.encryptor()
 
         return encryptor

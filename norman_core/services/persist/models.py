@@ -60,5 +60,5 @@ class Models:
     async def delete_models(http_client: HttpClient, token: Sensitive[str], constraints: QueryConstraints):
         json = constraints.model_dump()
 
-        response: int = await http_client.delete("persist/models/", token, json=json)
-        return response
+        affected_entities_count: int = await http_client.delete("persist/models/", token, json=json)
+        return affected_entities_count
