@@ -4,7 +4,7 @@ from norman_objects.services.file_push.pairing.socket_input_pairing_request impo
 from norman_objects.services.file_push.pairing.socket_pairing_response import SocketPairingResponse
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.utils.api_client import HttpClient
+from norman_core.clients.http_client import HttpClient
 
 
 class FilePush:

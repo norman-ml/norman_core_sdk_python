@@ -5,7 +5,7 @@ from norman_objects.services.authenticate.register.resend_email_verification_cod
 from norman_objects.shared.authentication.account_authentication_methods import AccountAuthenticationMethods
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.utils.api_client import HttpClient
+from norman_core.clients.http_client import HttpClient
 
 
 class Register:

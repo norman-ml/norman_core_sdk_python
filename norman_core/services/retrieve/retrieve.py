@@ -1,6 +1,6 @@
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.utils.api_client import HttpClient, ResponseEncoding
+from norman_core.clients.http_client import HttpClient, ResponseEncoding
 
 
 class Retrieve:

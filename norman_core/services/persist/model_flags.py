@@ -5,7 +5,7 @@ from norman_objects.shared.security.sensitive import Sensitive
 from norman_objects.shared.status_flags.status_flag import StatusFlag
 from pydantic import TypeAdapter
 
-from norman_core.utils.api_client import HttpClient
+from norman_core.clients.http_client import HttpClient
 
 
 class ModelFlags:

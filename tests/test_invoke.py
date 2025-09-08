@@ -13,7 +13,7 @@ from xxhash import xxh3_64
 from norman_core.services.invoke.invoke import Invoke
 from norman_core.services.persist import Persist
 from norman_core.services.retrieve.retrieve import Retrieve
-from norman_core.utils.api_client import HttpClient
+from norman_core.clients.http_client import HttpClient
 from tests.test_utils import get_flags_loop, http_client_logged_in
 
 TEXT_INPUT: Final = "Hello, world!"

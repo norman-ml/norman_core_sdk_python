@@ -5,8 +5,8 @@ from norman_objects.services.invoke.invocation_config import InvocationConfig
 from norman_objects.shared.invocations.invocation import Invocation
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.utils.api_client import HttpClient
-from norman_core.utils.api_client.objects.request_kwargs import FileStream
+from norman_core.clients.http_client import HttpClient
+from norman_core.clients.objects.request_kwargs import FileStream
 
 
 class Invoke:

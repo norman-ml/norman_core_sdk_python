@@ -10,7 +10,7 @@ from norman_objects.shared.status_flags.status_flag_value import StatusFlagValue
 
 from norman_core.services.authenticate.login import Login
 from norman_core.services.authenticate.signup import Signup
-from norman_core.utils.api_client import HttpClient
+from norman_core.clients.http_client import HttpClient
 
 GetFlagsFunction = Callable[[], Awaitable[dict[str, list[StatusFlag]]]]
 

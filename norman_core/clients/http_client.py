@@ -6,8 +6,8 @@ from norman_objects.shared.security.sensitive import Sensitive
 from typing_extensions import Unpack
 
 from norman_core._app_config import AppConfig
-from norman_core.utils.api_client.objects.request_kwargs import RequestKwargs
-from norman_core.utils.api_client.objects.response_encoding import ResponseEncoding
+from norman_core.clients.objects.request_kwargs import RequestKwargs
+from norman_core.clients.objects.response_encoding import ResponseEncoding
 
 
 class HttpClient:

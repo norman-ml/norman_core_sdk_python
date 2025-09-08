@@ -3,7 +3,7 @@ from norman_objects.services.authenticate.signup.signup_email_request import Sig
 from norman_objects.services.authenticate.signup.signup_password_request import SignupPasswordRequest
 from norman_objects.shared.accounts.account import Account
 
-from norman_core.utils.api_client import HttpClient
+from norman_core.clients.http_client import HttpClient
 
 
 class Signup:

@@ -30,12 +30,12 @@ from typing_extensions import Literal
 from xxhash import xxh3_64
 
 from norman_core._app_config import AppConfig
+from norman_core.clients.http_client import HttpClient
+from norman_core.clients.socket_client import SocketClient
 from norman_core.services.file_push.file_push import FilePush
 from norman_core.services.persist.model_bases import ModelBases
 from norman_core.services.persist.model_flags import ModelFlags
 from norman_core.services.persist.models import Models
-from norman_core.utils.api_client import HttpClient
-from norman_core.utils.api_client import SocketClient
 from tests.test_utils import http_client_logged_in, get_flags_loop, upload_progress_indicator
 
 email = "avremy.back@norman-ai.com"
