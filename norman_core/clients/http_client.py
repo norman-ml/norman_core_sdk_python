@@ -26,44 +26,28 @@ class HttpClient:
             timeout=timeout
         )
 
-    async def get(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+    async def request(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
         headers = self._create_headers(token)
+        request = self._client.build_request(method, endpoint, headers=headers, **kwargs)
 
-        response = await self._client.get(endpoint, headers=headers, **kwargs)
+        stream_response = response_encoding == ResponseEncoding.Iterator
+        response = await self._client.send(request, stream=stream_response)
         return self._parse_response(response, response_encoding)
+
+    async def get(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+        return self.request("GET", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def post(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        headers = self._create_headers(token)
-
-        response = await self._client.request("POST", endpoint, headers=headers, **kwargs)
-        return self._parse_response(response, response_encoding)
+        return self.request("POST", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def put(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        headers = self._create_headers(token)
-
-        response = await self._client.request("PUT", endpoint, headers=headers, **kwargs)
-        return self._parse_response(response, response_encoding)
+        return self.request("PUT", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def patch(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        headers = self._create_headers(token)
-
-        response = await self._client.request("PATCH", endpoint, headers=headers, **kwargs)
-        return self._parse_response(response, response_encoding)
+        return self.request("PATCH", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def delete(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        headers = self._create_headers(token)
-
-        response = await self._client.request("DELETE", endpoint, headers=headers, **kwargs)
-        return self._parse_response(response, response_encoding)
-
-    async def stream(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, **kwargs: Unpack[RequestKwargs]):
-        headers = self._create_headers(token)
-
-        request = self._client.build_request(method, endpoint, headers=headers, **kwargs)
-        response = await self._client.send(request, stream=True)
-        response.raise_for_status()
-
-        return response.headers, self.response_iterator(response)
+        return self.request("DELETE", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def post_multipart(self, endpoint: str, token: Sensitive[str], *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
         headers = {
@@ -92,16 +76,18 @@ class HttpClient:
     def _parse_response(response: httpx.Response, response_encoding: ResponseEncoding):
         response.raise_for_status()
 
+        if response_encoding == ResponseEncoding.Bytes:
+            return response.content
+        if response_encoding == ResponseEncoding.Iterator:
+            return response.headers, HttpClient._response_iterator(response)
         if response_encoding == ResponseEncoding.Json:
             return response.json()
         if response_encoding == ResponseEncoding.Text:
             return response.text
-        if response_encoding == ResponseEncoding.Bytes:
-            return response.content
         raise ValueError(f"Invalid response encoding: {response_encoding}")
 
     @staticmethod
-    async def response_iterator(response: Response):
+    async def _response_iterator(response: Response):
         try:
             async for chunk in response.aiter_bytes():
                 if chunk is not None and len(chunk) > 0:
