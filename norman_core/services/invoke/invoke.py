@@ -21,7 +21,7 @@ class Invoke:
             for file_name, file_stream in model_files.items():
                 if hasattr(file_stream, "read") and asyncio.iscoroutinefunction(file_stream.read):
                     file_stream = await file_stream.read()
-                files[file_name] = (file_name ,file_stream, "application/octet-stream")
+                files[file_name] = (file_name, file_stream, "application/octet-stream")
 
         response = await api_client.post_multipart("invoke/model", token, data=data, files=files)
         return Invocation.model_validate(response)

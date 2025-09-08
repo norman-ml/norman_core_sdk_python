@@ -30,7 +30,7 @@ class Models:
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
-    async def upgrade_models(api_client: ApiClient, token: Sensitive[str] ,models: list[Model]):
+    async def upgrade_models(api_client: ApiClient, token: Sensitive[str], models: list[Model]):
         json = None
         if models is not None:
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
@@ -39,7 +39,7 @@ class Models:
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
-    async def update_models(api_client: ApiClient, token: Sensitive[str], models: list[Model]):
+    async def replace_models(api_client: ApiClient, token: Sensitive[str], models: list[Model]):
         json = None
         if models is not None:
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
@@ -48,7 +48,7 @@ class Models:
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
-    async def set_active_model(api_client: ApiClient, token: Sensitive[str] ,model_previews: list[ModelPreview]):
+    async def set_active_model(api_client: ApiClient, token: Sensitive[str], model_previews: list[ModelPreview]):
         json = None
         if model_previews is not None:
             json = TypeAdapter(list[ModelPreview]).dump_python(model_previews, mode="json")
@@ -57,7 +57,7 @@ class Models:
         return TypeAdapter(list[ModelPreview]).validate_python(response)
 
     @staticmethod
-    async def delete_models(api_client: ApiClient, token: Sensitive[str] ,constraints: QueryConstraints):
+    async def delete_models(api_client: ApiClient, token: Sensitive[str], constraints: QueryConstraints):
         json = constraints.model_dump()
 
         response: int = await api_client.delete("persist/models/", token, json=json)
