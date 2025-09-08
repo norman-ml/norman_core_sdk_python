@@ -38,9 +38,6 @@ from norman_core.services.persist.model_flags import ModelFlags
 from norman_core.services.persist.models import Models
 from tests.test_utils import http_client_logged_in, get_flags_loop, upload_progress_indicator
 
-email = "avremy.back@norman-ai.com"
-password = "Avremy123!"
-account_id = "23844127049894141074602308225775386835"
 
 text_model_path = "./tests/samples/model_files/text_qa_model.pt"
 image_model_path = "./tests/samples/model_files/image_qa_model.pt"

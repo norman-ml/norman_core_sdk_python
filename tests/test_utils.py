@@ -11,28 +11,27 @@ from norman_objects.shared.status_flags.status_flag_value import StatusFlagValue
 from norman_core.services.authenticate.login import Login
 from norman_core.services.authenticate.signup import Signup
 from norman_core.clients.http_client import HttpClient
+from tests.test_config import username, password
 
 GetFlagsFunction = Callable[[], Awaitable[dict[str, list[StatusFlag]]]]
 
-username = "avremy"
-password = Sensitive("Avremy123!")
 
 @pytest_asyncio.fixture
 async def http_client():
-    client = HttpClient("https://api.dev.avremy.public.norman-ai.com/v0/")
+    client = HttpClient()
     async with client:
         yield client
 
 @pytest_asyncio.fixture
 async def http_client_guest():
-    client = HttpClient("https://api.dev.avremy.public.norman-ai.com/v0/")
+    client = HttpClient()
     async with client:
         response = await Signup.signup_default(client)
         yield client, response
 
 @pytest_asyncio.fixture
 async def http_client_logged_in():
-    client = HttpClient("https://api.dev.avremy.public.norman-ai.com/v0/")
+    client = HttpClient()
     async with client:
         login_request = NamePasswordLoginRequest(name=username, password=password)
         response = await Login.login_password_name(client, login_request)

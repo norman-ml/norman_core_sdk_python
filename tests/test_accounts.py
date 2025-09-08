@@ -7,10 +7,8 @@ from norman_objects.shared.accounts.account import Account
 from norman_objects.shared.security.sensitive import Sensitive
 
 from norman_core.services.authenticate import Authenticate
+from tests.test_config import password
 from tests.test_utils import http_client, get_name_with_time
-
-username = "avremy1"
-password = Sensitive("Avremy123!")
 
 _globals = {
     "account": cast(Optional[Account], None),
@@ -27,7 +25,7 @@ async def test_signup_default(http_client):
 
 @pytest.mark.asyncio
 async def test_signup_user(http_client):
-    t_username = get_name_with_time("avremy")
+    t_username = get_name_with_time("username")
     request = SignupPasswordRequest(name=t_username, password=password)
     response = await Authenticate.signup.signup_with_password(http_client, request)
     _globals["account"] = response

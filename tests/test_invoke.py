@@ -20,8 +20,6 @@ TEXT_INPUT: Final = "Hello, world!"
 image_input = "./tests/samples/model_logos/Delphi_logo.jpg"
 mirror_image_input = "./tests/samples/model_logos/Delphi_logo_mirror.jpg"
 
-avremy_account_id = "23845703660070374099865734459398242515"
-
 _globals: Final = {
     "invocation": cast(Optional[Invocation], None),
 }
