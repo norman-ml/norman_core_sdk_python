@@ -92,10 +92,12 @@ async def test_get_text_results(api_client_logged_in):
         warnings.warn("No invocation found")
         return
 
+    _, response_stream = await get_invoke_results(api_client, login_response.access_token, invocation)
+    response = bytearray()
+    async for chunk in response_stream:
+        response.extend(chunk)
 
-    response = await get_invoke_results(api_client, login_response.access_token, invocation)
-
-    assert isinstance(response, bytes) and response.decode("utf-8") == TEXT_INPUT[::-1]
+    assert response.decode("utf-8") == TEXT_INPUT[::-1]
 
 @pytest.mark.asyncio
 async def test_invoke_image(api_client_logged_in):
@@ -144,12 +146,15 @@ async def test_get_image_results(api_client_logged_in):
         warnings.warn("No invocation found")
         return
 
-    response = await get_invoke_results(api_client, login_response.access_token, invocation)
+    hash_stream = xxh3_64()
+
+    _, response_stream_handler = await get_invoke_results(api_client, login_response.access_token, invocation)
+    async for chunk in response_stream_handler:
+        hash_stream.update(chunk)
 
     async with aiofiles.open(mirror_image_input, "rb") as file:
         hash_expected = xxh3_64(await file.read()).digest()
-        hash_response = xxh3_64(response).digest()
-        assert hash_response == hash_expected
+        assert hash_expected == hash_stream.digest()
 
 async def get_invoke_results(api_client: ApiClient, token: Sensitive[str], invocation: Invocation):
     response = await Retrieve.get_invocation_output(

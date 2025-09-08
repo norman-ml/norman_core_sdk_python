@@ -1,6 +1,7 @@
 from typing import Optional
 
 import httpx
+from httpx import Response
 from norman_objects.shared.security.sensitive import Sensitive
 from typing_extensions import Unpack
 
@@ -55,6 +56,15 @@ class ApiClient:
         response = await self._client.request("DELETE", endpoint, headers=headers, **kwargs)
         return self._parse_response(response, response_encoding)
 
+    async def stream(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, **kwargs: Unpack[RequestKwargs]):
+        headers = self._create_headers(token)
+
+        request = self._client.build_request(method, endpoint, headers=headers, **kwargs)
+        response = await self._client.send(request, stream=True)
+        response.raise_for_status()
+
+        return response.headers, self.response_iterator(response)
+
     async def post_multipart(self, endpoint: str, token: Sensitive[str], *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
         headers = {
             "Authorization": f"Bearer {token.value()}",
@@ -89,6 +99,15 @@ class ApiClient:
         if response_encoding == ResponseEncoding.Bytes:
             return response.content
         raise ValueError(f"Invalid response encoding: {response_encoding}")
+
+    @staticmethod
+    async def response_iterator(response: Response):
+        try:
+            async for chunk in response.aiter_bytes():
+                if chunk is not None and len(chunk) > 0:
+                    yield chunk
+        finally:
+            await response.aclose()
 
     async def close(self):
         await self._client.aclose()
