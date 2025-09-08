@@ -18,7 +18,7 @@ class Models:
         json = request.model_dump(mode="json")
 
         response = await http_client.post("persist/models/get", token, json=json)
-        return TypeAdapter(list[Model]).validate_python(response)
+        return TypeAdapter(dict[str, Model]).validate_python(response)
 
     @staticmethod
     async def create_models(http_client: HttpClient, token: Sensitive[str], models: list[Model]):

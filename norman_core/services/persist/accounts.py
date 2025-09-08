@@ -36,12 +36,16 @@ class Accounts:
 
     @staticmethod
     async def update_accounts(http_client: HttpClient, token: Sensitive[str], account: Account.UpdateSchema, constraints: Optional[QueryConstraints] = None):
-        json = account.model_dump(mode="json")
-        params = None
+        parsed_constraints = None
         if constraints is not None:
-            params = constraints.model_dump(mode="json")
+            parsed_constraints = constraints.model_dump(mode="json")
 
-        affected_entities_count: int = await http_client.patch("persist/accounts", token, json=json, params=params)
+        json = {
+            "account": account.model_dump(mode="json"),
+            "constraints": parsed_constraints
+        }
+
+        affected_entities_count: int = await http_client.patch("persist/accounts", token, json=json)
         return affected_entities_count
 
     @staticmethod

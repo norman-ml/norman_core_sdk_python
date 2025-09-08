@@ -1,4 +1,4 @@
-from norman_objects.services.file_pull.download.tracked_download import TrackedDownload
+from norman_objects.services.file_pull.download.tracked_download_union import TrackedDownloadUnion
 from norman_objects.services.file_pull.requests.asset_download_request import AssetDownloadRequest
 from norman_objects.services.file_pull.requests.input_download_request import InputDownloadRequest
 from norman_objects.services.file_pull.requests.output_download_request import OutputDownloadRequest
@@ -12,7 +12,7 @@ class FilePull:
     @staticmethod
     async def get_download_metadata(http_client: HttpClient, token: Sensitive[str], entity_id: str):
         response = await http_client.get(f"file-pull/metadata/{entity_id}", token)
-        return TrackedDownload.model_validate(response)
+        return TypeAdapter(TrackedDownloadUnion).validate_python(response)
 
     @staticmethod
     async def submit_asset_links(http_client: HttpClient, token: Sensitive[str], download_request: AssetDownloadRequest):

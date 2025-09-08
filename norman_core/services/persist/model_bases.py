@@ -16,4 +16,4 @@ class ModelBases:
         json = request.model_dump(mode="json")
 
         response = await http_client.post("persist/models/bases/get", token, json=json)
-        return TypeAdapter(list[ModelBase]).validate_python(response)
+        return TypeAdapter(dict[str, ModelBase]).validate_python(response)
