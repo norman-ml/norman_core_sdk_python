@@ -35,19 +35,19 @@ class HttpClient:
         return self._parse_response(response, response_encoding)
 
     async def get(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return self.request("GET", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("GET", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def post(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return self.request("POST", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("POST", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def put(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return self.request("PUT", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("PUT", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def patch(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return self.request("PATCH", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("PATCH", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def delete(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return self.request("DELETE", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("DELETE", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def post_multipart(self, endpoint: str, token: Sensitive[str], *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
         headers = {
