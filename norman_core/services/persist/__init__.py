@@ -10,6 +10,7 @@ from norman_core.services.persist.notifications import Notifications
 class Persist:
     accounts = Accounts
     invocation_flags = InvocationFlags
+    invocations = Invocations
     model_bases = ModelBases
     model_flags = ModelFlags
     models = Models
