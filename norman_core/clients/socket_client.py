@@ -1,7 +1,7 @@
 import asyncio
 import base64
 import contextlib
-from typing import Optional, AsyncGenerator
+from typing import AsyncGenerator
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
 from norman_objects.services.file_push.pairing.socket_pairing_response import SocketPairingResponse
@@ -23,7 +23,7 @@ class SocketClient:
         return hash_stream.hexdigest()
 
     @staticmethod
-    async def write(socket_info: SocketPairingResponse, file_stream: AsyncGenerator[bytes]):
+    async def write(socket_info: SocketPairingResponse, file_stream: AsyncGenerator[bytes, None]):
         authentication_header = base64.b64decode(socket_info.authentication_header)
         encryptor = SocketClient._create_encryptor(socket_info)
 
