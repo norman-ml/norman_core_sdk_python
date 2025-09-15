@@ -26,6 +26,11 @@ class Invocations:
         return TypeAdapter(list[Invocation]).validate_python(response)
 
     @staticmethod
+    async def create_invocations_by_model_names(http_client: HttpClient, token: Sensitive[str], model_name_counter: dict[str, int]):
+        response = await http_client.post("persist/invocations/by-name", token, json=model_name_counter)
+        return TypeAdapter(list[Invocation]).validate_python(response)
+
+    @staticmethod
     async def get_invocation_history(http_client: HttpClient, token: Sensitive[str], constraints: Optional[QueryConstraints] = None):
         json = None
         if constraints is not None:
