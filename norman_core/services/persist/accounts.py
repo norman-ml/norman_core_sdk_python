@@ -47,10 +47,3 @@ class Accounts:
 
         affected_entities_count: int = await http_client.patch("authenticate/accounts", token, json=json)
         return affected_entities_count
-
-    @staticmethod
-    async def delete_accounts(http_client: HttpClient, token: Sensitive[str], constraints: QueryConstraints):
-        json = constraints.model_dump(mode="json")
-
-        affected_entities_count: int = await http_client.delete("authenticate/accounts", token, json=json)
-        return affected_entities_count
