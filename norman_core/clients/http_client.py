@@ -1,11 +1,12 @@
 from typing import Optional
+from typing_extensions import Unpack
 
 import httpx
 from httpx import Response
 from norman_objects.shared.security.sensitive import Sensitive
-from typing_extensions import Unpack
 
 from norman_core._app_config import AppConfig
+from norman_core.clients.objects.errors.norman_http_error import NormanHttpError
 from norman_core.clients.objects.request_kwargs import RequestKwargs
 from norman_core.clients.objects.response_encoding import ResponseEncoding
 
@@ -74,7 +75,16 @@ class HttpClient:
 
     @staticmethod
     def _parse_response(response: httpx.Response, response_encoding: ResponseEncoding):
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError as e:
+            try:
+                detail = e.response.json()
+            except Exception:
+                detail = e.response.text
+
+            message = f"HTTP {e.response.status_code} {e.request.url}: {detail}"
+            raise NormanHttpError(message, status_code=e.response.status_code, detail=detail) from e
 
         if response_encoding == ResponseEncoding.Bytes:
             return response.content
@@ -104,7 +114,6 @@ class HttpClient:
 
     async def __aexit__(self, exc_type, exc, tb):
         await self._client.__aexit__(exc_type, exc, tb)
-        return self
 
     def __repr__(self):
         return f"<Norman.ApiClient base_url={self._client.base_url} closed={self._client.is_closed}>"
