@@ -6,7 +6,6 @@ from httpx import Response
 from norman_objects.shared.security.sensitive import Sensitive
 
 from norman_core._app_config import AppConfig
-from norman_core.clients.objects.errors.norman_http_error import NormanHttpError
 from norman_core.clients.objects.request_kwargs import RequestKwargs
 from norman_core.clients.objects.response_encoding import ResponseEncoding
 
@@ -82,9 +81,8 @@ class HttpClient:
                 detail = e.response.json()
             except Exception:
                 detail = e.response.text
-
             message = f"HTTP {e.response.status_code} {e.request.url}: {detail}"
-            raise NormanHttpError(message, status_code=e.response.status_code, detail=detail) from e
+            raise Exception(message) from e
 
         if response_encoding == ResponseEncoding.Bytes:
             return response.content
