@@ -4,29 +4,55 @@ from typing_extensions import Unpack
 import httpx
 from httpx import Response
 from norman_objects.shared.security.sensitive import Sensitive
+from norman_utils_external.singleton import Singleton
 
 from norman_core._app_config import AppConfig
 from norman_core.clients.objects.request_kwargs import RequestKwargs
 from norman_core.clients.objects.response_encoding import ResponseEncoding
 
 
-class HttpClient:
+class HttpClient(metaclass=Singleton):
     def __init__(self, base_url: Optional[str] = None, timeout: Optional[float] = None):
+        self._client = None
+
         if base_url is None:
-            base_url = AppConfig.http.base_url
+            self._base_url = AppConfig.http.base_url
+        else:
+            self._base_url = base_url
+
         if timeout is None:
-            timeout = AppConfig.http.timeout_seconds
+            self._timeout = AppConfig.http.timeout_seconds
+        else:
+            self._timeout = timeout
 
         self._headers = {
             "Content-Type": "application/json"
         }
 
-        self._client = httpx.AsyncClient(
-            base_url=base_url,
-            timeout=timeout
-        )
+    def open(self):
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.AsyncClient(
+                base_url=self._base_url,
+                timeout=self._timeout
+            )
 
-    async def request(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+    async def close(self):
+        if self._client is not None and not self._client.is_closed:
+            await self._client.aclose()
+
+    async def __aenter__(self):
+        self.open()
+        await self._client.__aenter__()
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        if self._client:
+            await self._client.__aexit__(exc_type, exc, tb)
+
+    def __repr__(self):
+        return f"<Norman.ApiClient base_url={self._client.base_url} closed={self._client.is_closed}>"
+
+    async def _request(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
         headers = self._create_headers(token)
         request = self._client.build_request(method, endpoint, headers=headers, **kwargs)
 
@@ -35,19 +61,19 @@ class HttpClient:
         return self._parse_response(response, response_encoding)
 
     async def get(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self.request("GET", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self._request("GET", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def post(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self.request("POST", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self._request("POST", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def put(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self.request("PUT", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self._request("PUT", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def patch(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self.request("PATCH", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self._request("PATCH", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def delete(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self.request("DELETE", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self._request("DELETE", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def post_multipart(self, endpoint: str, token: Sensitive[str], *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
         headers = {
@@ -102,16 +128,3 @@ class HttpClient:
                     yield chunk
         finally:
             await response.aclose()
-
-    async def close(self):
-        await self._client.aclose()
-
-    async def __aenter__(self):
-        await self._client.__aenter__()
-        return self
-
-    async def __aexit__(self, exc_type, exc, tb):
-        await self._client.__aexit__(exc_type, exc, tb)
-
-    def __repr__(self):
-        return f"<Norman.ApiClient base_url={self._client.base_url} closed={self._client.is_closed}>"

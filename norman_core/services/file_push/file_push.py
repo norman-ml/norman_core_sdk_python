@@ -4,20 +4,33 @@ from norman_objects.services.file_push.pairing.socket_input_pairing_request impo
 from norman_objects.services.file_push.pairing.socket_pairing_response import SocketPairingResponse
 from norman_objects.shared.security.sensitive import Sensitive
 
+from norman_utils_external.singleton import Singleton
 from norman_core.clients.http_client import HttpClient
 
 
-class FilePush:
-    @staticmethod
-    async def allocate_socket_for_asset(http_client: HttpClient, token: Sensitive[str], pairing_request: SocketAssetPairingRequest):
-        response = await http_client.post("file-push/socket/pair/asset", token, json=pairing_request.model_dump(mode="json"))
+class FilePush(metaclass=Singleton):
+    def __init__(self):
+        self._http_client = HttpClient()
+
+    async def allocate_socket_for_asset(self, token: Sensitive[str], pairing_request: SocketAssetPairingRequest):
+        response = await self._http_client.post(
+            "file-push/socket/pair/asset",
+            token,
+            json=pairing_request.model_dump(mode="json"),
+        )
         return SocketPairingResponse.model_validate(response)
 
-    @staticmethod
-    async def allocate_socket_for_input(http_client: HttpClient, token: Sensitive[str], pairing_request: SocketInputPairingRequest):
-        response = await http_client.post("file-push/socket/pair/input", token, json=pairing_request.model_dump(mode="json"))
+    async def allocate_socket_for_input(self, token: Sensitive[str], pairing_request: SocketInputPairingRequest):
+        response = await self._http_client.post(
+            "file-push/socket/pair/input",
+            token,
+            json=pairing_request.model_dump(mode="json"),
+        )
         return SocketPairingResponse.model_validate(response)
 
-    @staticmethod
-    async def complete_file_transfer(http_client: HttpClient, token: Sensitive[str], checksum_request: ChecksumRequest):
-        await http_client.post("file-push/socket/complete", token, json=checksum_request.model_dump(mode="json"))
+    async def complete_file_transfer(self, token: Sensitive[str], checksum_request: ChecksumRequest):
+        await self._http_client.post(
+            "file-push/socket/complete",
+            token,
+            json=checksum_request.model_dump(mode="json"),
+        )
