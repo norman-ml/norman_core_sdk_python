@@ -29,30 +29,27 @@ class HttpClient(metaclass=Singleton):
             "Content-Type": "application/json"
         }
 
-    def open(self):
-        if self._client is None or self._client.is_closed:
-            self._client = httpx.AsyncClient(
-                base_url=self._base_url,
-                timeout=self._timeout
-            )
+    async def open(self):
+        await self.close()
+        self._client = httpx.AsyncClient(
+            base_url=self._base_url,
+            timeout=self._timeout
+        )
 
     async def close(self):
         if self._client is not None and not self._client.is_closed:
             await self._client.aclose()
 
     async def __aenter__(self):
-        self.open()
+        await self.open()
         await self._client.__aenter__()
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
-        if self._client:
+        if self._client is not None:
             await self._client.__aexit__(exc_type, exc, tb)
 
-    def __repr__(self):
-        return f"<Norman.ApiClient base_url={self._client.base_url} closed={self._client.is_closed}>"
-
-    async def _request(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
+    async def request(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
         headers = self._create_headers(token)
         request = self._client.build_request(method, endpoint, headers=headers, **kwargs)
 
@@ -61,19 +58,19 @@ class HttpClient(metaclass=Singleton):
         return self._parse_response(response, response_encoding)
 
     async def get(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self._request("GET", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("GET", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def post(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self._request("POST", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("POST", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def put(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self._request("PUT", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("PUT", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def patch(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self._request("PATCH", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("PATCH", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def delete(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
-        return await self._request("DELETE", endpoint, token, response_encoding=response_encoding, **kwargs)
+        return await self.request("DELETE", endpoint, token, response_encoding=response_encoding, **kwargs)
 
     async def post_multipart(self, endpoint: str, token: Sensitive[str], *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]):
         headers = {
@@ -104,10 +101,22 @@ class HttpClient(metaclass=Singleton):
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
             try:
+                method = e.request.method
+                url = e.request.url
+                status_code = e.response.status_code
                 detail = e.response.json()
             except Exception:
+                method = e.request.method
+                url = e.request.url
+                status_code = e.response.status_code
                 detail = e.response.text
-            message = f"HTTP {e.response.status_code} {e.request.url}: {detail}"
+
+            message = (
+                f"Request failed\n"
+                f"→ URL: {method} {url}\n"
+                f"→ Status: {status_code}\n"
+                f"→ Detail: {detail}"
+            )
             raise Exception(message) from e
 
         if response_encoding == ResponseEncoding.Bytes:
