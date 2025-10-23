@@ -13,24 +13,15 @@ class FilePush(metaclass=Singleton):
         self._http_client = HttpClient()
 
     async def allocate_socket_for_asset(self, token: Sensitive[str], pairing_request: SocketAssetPairingRequest):
-        response = await self._http_client.post(
-            "file-push/socket/pair/asset",
-            token,
-            json=pairing_request.model_dump(mode="json"),
-        )
+        json = pairing_request.model_dump(mode="json")
+        response = await self._http_client.post("file-push/socket/pair/asset", token, json=json)
         return SocketPairingResponse.model_validate(response)
 
     async def allocate_socket_for_input(self, token: Sensitive[str], pairing_request: SocketInputPairingRequest):
-        response = await self._http_client.post(
-            "file-push/socket/pair/input",
-            token,
-            json=pairing_request.model_dump(mode="json"),
-        )
+        json = pairing_request.model_dump(mode="json")
+        response = await self._http_client.post("file-push/socket/pair/input", token, json=json)
         return SocketPairingResponse.model_validate(response)
 
     async def complete_file_transfer(self, token: Sensitive[str], checksum_request: ChecksumRequest):
-        await self._http_client.post(
-            "file-push/socket/complete",
-            token,
-            json=checksum_request.model_dump(mode="json"),
-        )
+        json = checksum_request.model_dump(mode="json")
+        await self._http_client.post("file-push/socket/complete", token, json=json)

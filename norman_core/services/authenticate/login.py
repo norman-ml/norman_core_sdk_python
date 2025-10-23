@@ -17,39 +17,29 @@ class Login(metaclass=Singleton):
         return LoginResponse.model_validate(response)
 
     async def login_with_key(self, api_key_login_request: ApiKeyLoginRequest):
-        response = await self._http_client.post(
-            "authenticate/login/key",
-            json=api_key_login_request.model_dump(mode="json"),
-        )
+        json = api_key_login_request.model_dump(mode="json")
+        response = await self._http_client.post("authenticate/login/key", json=json)
         return LoginResponse.model_validate(response)
 
     async def login_password_account_id(self, login_request: AccountIDPasswordLoginRequest):
-        response = await self._http_client.post(
-            "authenticate/login/password/account_id",
-            json=login_request.model_dump(mode="json"),
-        )
+        json = login_request.model_dump(mode="json")
+        response = await self._http_client.post("authenticate/login/password/account_id", json=json)
         return LoginResponse.model_validate(response)
 
     async def login_password_name(self, login_request: NamePasswordLoginRequest):
-        response = await self._http_client.post(
-            "authenticate/login/password/name",
-            json=login_request.model_dump(mode="json"),
-        )
+        json = login_request.model_dump(mode="json")
+        response = await self._http_client.post("authenticate/login/password/name", json=json)
         return LoginResponse.model_validate(response)
 
     async def login_password_email(self, login_request: EmailPasswordLoginRequest):
-        response = await self._http_client.post(
-            "authenticate/login/password/email",
-            json=login_request.model_dump(mode="json"),
-        )
+        json = login_request.model_dump(mode="json")
+        response = await self._http_client.post("authenticate/login/password/email", json=json)
         return LoginResponse.model_validate(response)
 
     async def login_email_otp(self, email: str):
         await self._http_client.post("authenticate/login/email/otp", json={"email": email})
 
     async def verify_email_otp(self, email: str, code: str):
-        response = await self._http_client.post(
-            "authenticate/login/email/otp/verify",
-            json={"email": email, "code": code},
-        )
+        request_dict = {"email": email, "code": code}
+        response = await self._http_client.post("authenticate/login/email/otp/verify", json=request_dict)
         return LoginResponse.model_validate(response)

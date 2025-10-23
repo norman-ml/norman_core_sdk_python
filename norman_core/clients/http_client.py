@@ -113,10 +113,10 @@ class HttpClient(metaclass=Singleton):
 
             message = f"""
                 f"Request failed\n"
-                f"→ Method: {method}\n"
-                f"→ URL: {url}\n"
-                f"→ Status: {status_code}\n"
-                f"→ Detail: {detail}"
+                f"Method: {method}\n"
+                f"URL: {url}\n"
+                f"Status: {status_code}\n"
+                f"Detail: {detail}"
             """
             raise Exception(message) from e
 
