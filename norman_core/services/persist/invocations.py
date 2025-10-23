@@ -14,7 +14,9 @@ class Invocations(metaclass=Singleton):
         self._http_client = HttpClient()
 
     async def get_invocations(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None):
-        json = constraints.model_dump(mode="json") if constraints else None
+        json = None
+        if constraints is not None:
+            json = constraints.model_dump(mode="json")
         response = await self._http_client.post("persist/invocations/get", token, json=json)
         return TypeAdapter(dict[str, Invocation]).validate_python(response)
 
@@ -28,6 +30,8 @@ class Invocations(metaclass=Singleton):
         return TypeAdapter(list[Invocation]).validate_python(response)
 
     async def get_invocation_history(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None):
-        json = constraints.model_dump(mode="json") if constraints else None
+        json = None
+        if constraints is not None:
+            json = constraints.model_dump(mode="json")
         response = await self._http_client.post("persist/invocation/history/get", token, json=json)
         return TypeAdapter(dict[str, Invocation]).validate_python(response)

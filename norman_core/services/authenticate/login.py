@@ -40,6 +40,6 @@ class Login(metaclass=Singleton):
         await self._http_client.post("authenticate/login/email/otp", json={"email": email})
 
     async def verify_email_otp(self, email: str, code: str):
-        request_dict = {"email": email, "code": code}
-        response = await self._http_client.post("authenticate/login/email/otp/verify", json=request_dict)
+        json = {"email": email, "code": code}
+        response = await self._http_client.post("authenticate/login/email/otp/verify", json=json)
         return LoginResponse.model_validate(response)
