@@ -111,12 +111,13 @@ class HttpClient(metaclass=Singleton):
                 status_code = e.response.status_code
                 detail = e.response.text
 
-            message = (
+            message = f"""
                 f"Request failed\n"
-                f"→ URL: {method} {url}\n"
+                f"→ Method: {method}\n"
+                f"→ URL: {url}\n"
                 f"→ Status: {status_code}\n"
                 f"→ Detail: {detail}"
-            )
+            """
             raise Exception(message) from e
 
         if response_encoding == ResponseEncoding.Bytes:
