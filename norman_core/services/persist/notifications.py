@@ -13,7 +13,7 @@ class Notifications(metaclass=Singleton):
     def __init__(self):
         self._http_client = HttpClient()
 
-    async def get_notifications(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None):
+    async def get_notifications(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None) -> list[Notification]:
         json = None
         if constraints is not None:
             json = constraints.model_dump(mode="json")

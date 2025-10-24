@@ -13,7 +13,7 @@ class ModelBases(metaclass=Singleton):
     def __init__(self):
         self._http_client = HttpClient()
 
-    async def get_model_bases(self, token: Sensitive[str], request: Optional[GetModelsRequest] = None):
+    async def get_model_bases(self, token: Sensitive[str], request: Optional[GetModelsRequest] = None) -> dict[str, ModelBase]:
         if request is None:
             request = GetModelsRequest(constraints=None, finished_models=True)
         json = request.model_dump(mode="json")

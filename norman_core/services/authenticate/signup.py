@@ -11,16 +11,16 @@ class Signup(metaclass=Singleton):
     def __init__(self):
         self._http_client = HttpClient()
 
-    async def signup_default(self):
+    async def signup_default(self) -> LoginResponse:
         response = await self._http_client.put("authenticate/signup/default")
         return LoginResponse.model_validate(response)
 
-    async def signup_with_password(self, signup_request: SignupPasswordRequest):
+    async def signup_with_password(self, signup_request: SignupPasswordRequest) -> Account:
         json = signup_request.model_dump(mode="json")
         response = await self._http_client.put("authenticate/signup/password", json=json)
         return Account.model_validate(response)
 
-    async def signup_with_email(self, signup_request: SignupEmailRequest):
+    async def signup_with_email(self, signup_request: SignupEmailRequest) -> Account:
         json = signup_request.model_dump(mode="json")
         response = await self._http_client.put("authenticate/signup/email", json=json)
         return Account.model_validate(response)

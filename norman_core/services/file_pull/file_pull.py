@@ -13,21 +13,21 @@ class FilePull(metaclass=Singleton):
     def __init__(self):
         self._http_client = HttpClient()
 
-    async def get_download_metadata(self, token: Sensitive[str], entity_id: str):
+    async def get_download_metadata(self, token: Sensitive[str], entity_id: str) -> TrackedDownloadUnion:
         response = await self._http_client.get(f"file-pull/metadata/{entity_id}", token)
         return TypeAdapter(TrackedDownloadUnion).validate_python(response)
 
-    async def submit_asset_links(self, token: Sensitive[str], download_request: AssetDownloadRequest):
+    async def submit_asset_links(self, token: Sensitive[str], download_request: AssetDownloadRequest) -> list[str] :
         json = download_request.model_dump(mode="json")
         response = await self._http_client.post("file-pull/upload/assets", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)
 
-    async def submit_input_links(self, token: Sensitive[str], download_request: InputDownloadRequest):
+    async def submit_input_links(self, token: Sensitive[str], download_request: InputDownloadRequest) -> list[str]:
         json = download_request.model_dump(mode="json")
         response = await self._http_client.post("file-pull/upload/inputs", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)
 
-    async def submit_output_links(self, token: Sensitive[str], download_request: OutputDownloadRequest):
+    async def submit_output_links(self, token: Sensitive[str], download_request: OutputDownloadRequest) -> list[str]:
         json = download_request.model_dump(mode="json")
         response = await self._http_client.post("file-pull/upload/outputs", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)

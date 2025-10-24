@@ -15,7 +15,7 @@ class Models(metaclass=Singleton):
     def __init__(self):
         self._http_client = HttpClient()
     
-    async def get_models(self, token: Sensitive[str], request: Optional[GetModelsRequest] = None):
+    async def get_models(self, token: Sensitive[str], request: Optional[GetModelsRequest] = None) -> dict[str, Model]:
         if request is None:
             request = GetModelsRequest(constraints=None, finished_models=True)
         json = request.model_dump(mode="json")
@@ -24,7 +24,7 @@ class Models(metaclass=Singleton):
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     
-    async def create_models(self, token: Sensitive[str], models: list[Model]):
+    async def create_models(self, token: Sensitive[str], models: list[Model]) -> dict[str, Model]:
         json = None
         if models is not None:
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
@@ -33,7 +33,7 @@ class Models(metaclass=Singleton):
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     
-    async def upgrade_models(self, token: Sensitive[str], models: list[Model]):
+    async def upgrade_models(self, token: Sensitive[str], models: list[Model]) -> dict[str, Model]:
         json = None
         if models is not None:
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
@@ -42,7 +42,7 @@ class Models(metaclass=Singleton):
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     
-    async def replace_models(self, token: Sensitive[str], models: list[Model]):
+    async def replace_models(self, token: Sensitive[str], models: list[Model]) -> dict[str, Model]:
         json = None
         if models is not None:
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
@@ -51,7 +51,7 @@ class Models(metaclass=Singleton):
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
     
-    async def set_active_model(self, token: Sensitive[str], model_previews: list[ModelPreview]):
+    async def set_active_model(self, token: Sensitive[str], model_previews: list[ModelPreview]) -> list[ModelPreview]:
         json = None
         if model_previews is not None:
             json = TypeAdapter(list[ModelPreview]).dump_python(model_previews, mode="json")
@@ -60,7 +60,7 @@ class Models(metaclass=Singleton):
         return TypeAdapter(list[ModelPreview]).validate_python(response)
 
     
-    async def delete_models(self, token: Sensitive[str], constraints: QueryConstraints):
+    async def delete_models(self, token: Sensitive[str], constraints: QueryConstraints) -> int:
         json = constraints.model_dump()
 
         affected_entities_count: int = await self._http_client.delete("persist/models/", token, json=json)
