@@ -12,7 +12,7 @@ from norman_core.clients.objects.response_encoding import ResponseEncoding
 
 
 class HttpClient(metaclass=Singleton):
-    def __init__(self, base_url: Optional[str] = None, timeout: Optional[float] = None):
+    def __init__(self, base_url: Optional[str] = None, timeout: Optional[float] = None) -> None:
         self._client = None
 
         if base_url is None:

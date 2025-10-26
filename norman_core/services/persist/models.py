@@ -12,7 +12,7 @@ from norman_core.clients.http_client import HttpClient
 
 
 class Models(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self._http_client = HttpClient()
     
     async def get_models(self, token: Sensitive[str], request: Optional[GetModelsRequest] = None) -> dict[str, Model]:

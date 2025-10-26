@@ -5,7 +5,7 @@ from norman_core.clients.http_client import HttpClient, ResponseEncoding
 
 
 class Retrieve(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self._http_client = HttpClient()
 
     async def get_model_asset(self, token: Sensitive[str], account_id: str, model_id: str, asset_id: str):

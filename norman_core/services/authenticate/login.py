@@ -9,7 +9,7 @@ from norman_core.clients.http_client import HttpClient
 
 
 class Login(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self._http_client = HttpClient()
 
     async def login_default(self, account_id: str) -> LoginResponse:

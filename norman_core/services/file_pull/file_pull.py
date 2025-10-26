@@ -10,7 +10,7 @@ from norman_core.clients.http_client import HttpClient
 
 
 class FilePull(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self._http_client = HttpClient()
 
     async def get_download_metadata(self, token: Sensitive[str], entity_id: str) -> TrackedDownloadUnion:

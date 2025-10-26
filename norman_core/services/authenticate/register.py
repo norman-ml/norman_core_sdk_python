@@ -10,7 +10,7 @@ from norman_core.clients.http_client import HttpClient
 
 
 class Register(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self._http_client = HttpClient()
 
     async def get_authentication_factors(self, token: Sensitive[str], account_id: str) -> AccountAuthenticationMethods:

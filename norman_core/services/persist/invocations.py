@@ -10,7 +10,7 @@ from norman_core.clients.http_client import HttpClient
 
 
 class Invocations(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self._http_client = HttpClient()
 
     async def get_invocations(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None) -> dict[str, Invocation]:

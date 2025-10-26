@@ -9,7 +9,7 @@ from norman_core.clients.http_client import HttpClient
 
 
 class FilePush(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self._http_client = HttpClient()
 
     async def allocate_socket_for_asset(self, token: Sensitive[str], pairing_request: SocketAssetPairingRequest) -> SocketPairingResponse:
