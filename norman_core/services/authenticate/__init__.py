@@ -7,7 +7,7 @@ from norman_core.services.authenticate.signup import Signup
 
 
 class Authenticate(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self.accounts = Accounts()
         self.login = Login()
         self.register = Register()

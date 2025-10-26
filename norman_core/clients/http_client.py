@@ -52,7 +52,7 @@ class HttpClient(metaclass=Singleton):
             exception_type: Optional[Type[BaseException]],
             exception_value: Optional[BaseException],
             traceback_object: Optional[TracebackType]
-    ) -> None:
+        ) -> None:
         if self._client is not None:
             await self._client.__aexit__(exception_type, exception_value, traceback_object)
 

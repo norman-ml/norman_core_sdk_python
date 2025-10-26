@@ -8,7 +8,7 @@ from norman_core.services.persist.status_flags import StatusFlags
 
 
 class Persist(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self) -> None:
         self.invocations = Invocations()
         self.model_bases = ModelBases()
         self.models = Models()
