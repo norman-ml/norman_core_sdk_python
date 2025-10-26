@@ -45,9 +45,9 @@ class HttpClient(metaclass=Singleton):
         await self._client.__aenter__()
         return self
 
-    async def __aexit__(self, exc_type, exc, tb) -> None:
+    async def __aexit__(self, exception_type, exception_value, traceback_object) -> None:
         if self._client is not None:
-            await self._client.__aexit__(exc_type, exc, tb)
+            await self._client.__aexit__(exception_type, exception_value, traceback_object)
 
     async def request(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]) -> Any:
         headers = self._create_headers(token)
