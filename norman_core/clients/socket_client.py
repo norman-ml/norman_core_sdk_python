@@ -1,7 +1,7 @@
 import asyncio
 import base64
 import contextlib
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Any
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
 from norman_objects.services.file_push.pairing.socket_pairing_response import SocketPairingResponse
@@ -13,7 +13,7 @@ from norman_core._app_config import AppConfig
 
 class SocketClient:
     @staticmethod
-    async def write_and_digest(socket_info: SocketPairingResponse, asset_stream: AsyncBufferedReader):
+    async def write_and_digest(socket_info: SocketPairingResponse, asset_stream: AsyncBufferedReader) -> str:
         hash_stream = xxh3_64()
         body_stream = StreamingUtils.process_read_stream(asset_stream, hash_stream.update, AppConfig.io.chunk_size, False)
 
@@ -23,7 +23,7 @@ class SocketClient:
         return hash_stream.hexdigest()
 
     @staticmethod
-    async def write(socket_info: SocketPairingResponse, file_stream: AsyncGenerator[bytes, None]):
+    async def write(socket_info: SocketPairingResponse, file_stream: AsyncGenerator[bytes, None]) -> AsyncGenerator[bytes, None]:
         authentication_header = base64.b64decode(socket_info.authentication_header)
         encryptor = SocketClient._create_encryptor(socket_info)
 
@@ -44,7 +44,7 @@ class SocketClient:
                 await stream_writer.wait_closed()
 
     @staticmethod
-    def _create_encryptor(pairing_response: SocketPairingResponse):
+    def _create_encryptor(pairing_response: SocketPairingResponse) -> Any:
         key_bytes = base64.b64decode(pairing_response.encryption_key)
         base_nonce12 = base64.b64decode(pairing_response.nonce)
 

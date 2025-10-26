@@ -4,40 +4,42 @@ from norman_objects.services.authenticate.login.email_password_login_request imp
 from norman_objects.services.authenticate.login.login_response import LoginResponse
 from norman_objects.services.authenticate.login.name_password_login_request import NamePasswordLoginRequest
 
+from norman_utils_external.singleton import Singleton
 from norman_core.clients.http_client import HttpClient
 
 
-class Login:
-    @staticmethod
-    async def login_default(http_client: HttpClient, account_id: str):
-        response = await http_client.post(f"authenticate/login/default/{account_id}")
+class Login(metaclass=Singleton):
+    def __init__(self) -> None:
+        self._http_client = HttpClient()
+
+    async def login_default(self, account_id: str) -> LoginResponse:
+        response = await self._http_client.post(f"authenticate/login/default/{account_id}")
         return LoginResponse.model_validate(response)
 
-    @staticmethod
-    async def login_with_key(http_client: HttpClient, api_key_login_request: ApiKeyLoginRequest):
-        response = await http_client.post("authenticate/login/key", json=api_key_login_request.model_dump(mode="json"))
+    async def login_with_key(self, api_key_login_request: ApiKeyLoginRequest) -> LoginResponse:
+        json = api_key_login_request.model_dump(mode="json")
+        response = await self._http_client.post("authenticate/login/key", json=json)
         return LoginResponse.model_validate(response)
 
-    @staticmethod
-    async def login_password_account_id(http_client: HttpClient, login_request: AccountIDPasswordLoginRequest):
-        response = await http_client.post("authenticate/login/password/account_id", json=login_request.model_dump(mode="json"))
+    async def login_password_account_id(self, login_request: AccountIDPasswordLoginRequest) -> LoginResponse:
+        json = login_request.model_dump(mode="json")
+        response = await self._http_client.post("authenticate/login/password/account_id", json=json)
         return LoginResponse.model_validate(response)
 
-    @staticmethod
-    async def login_password_name(http_client: HttpClient, login_request: NamePasswordLoginRequest):
-        response = await http_client.post("authenticate/login/password/name", json=login_request.model_dump(mode="json"))
+    async def login_password_name(self, login_request: NamePasswordLoginRequest) -> LoginResponse:
+        json = login_request.model_dump(mode="json")
+        response = await self._http_client.post("authenticate/login/password/name", json=json)
         return LoginResponse.model_validate(response)
 
-    @staticmethod
-    async def login_password_email(http_client: HttpClient, login_request: EmailPasswordLoginRequest):
-        response = await http_client.post("authenticate/login/password/email", json=login_request.model_dump(mode="json"))
+    async def login_password_email(self, login_request: EmailPasswordLoginRequest) -> LoginResponse:
+        json = login_request.model_dump(mode="json")
+        response = await self._http_client.post("authenticate/login/password/email", json=json)
         return LoginResponse.model_validate(response)
 
-    @staticmethod
-    async def login_email_otp(http_client: HttpClient, email: str):
-        await http_client.post("authenticate/login/email/otp", json={"email": email})
+    async def login_email_otp(self, email: str) -> None:
+        await self._http_client.post("authenticate/login/email/otp", json={"email": email})
 
-    @staticmethod
-    async def verify_email_otp(http_client: HttpClient, email: str, code: str):
-        response = await http_client.post("authenticate/login/email/otp/verify", json={"email": email, "code": code})
+    async def verify_email_otp(self, email: str, code: str) -> LoginResponse:
+        json = {"email": email, "code": code}
+        response = await self._http_client.post("authenticate/login/email/otp/verify", json=json)
         return LoginResponse.model_validate(response)
