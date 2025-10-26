@@ -1,6 +1,6 @@
 from norman_objects.services.authenticate.login.login_response import LoginResponse
 from norman_objects.services.authenticate.signup.signup_email_request import SignupEmailRequest
-from norman_objects.services.authenticate.signup.signup_password_request import SignupKeyRequest
+from norman_objects.services.authenticate.signup.signup_key_request import SignupKeyRequest
 from norman_objects.services.authenticate.signup.signup_password_request import SignupPasswordRequest
 from norman_objects.shared.accounts.account import Account
 from norman_utils_external.singleton import Singleton
