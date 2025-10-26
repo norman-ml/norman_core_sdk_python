@@ -1,4 +1,6 @@
-from typing import Optional, Any, AsyncGenerator
+from types import TracebackType
+from typing import Any, AsyncGenerator
+from typing import Optional, Type
 from typing_extensions import Unpack
 
 import httpx
@@ -45,7 +47,12 @@ class HttpClient(metaclass=Singleton):
         await self._client.__aenter__()
         return self
 
-    async def __aexit__(self, exception_type, exception_value, traceback_object) -> None:
+    async def __aexit__(
+            self,
+            exception_type: Optional[Type[BaseException]],
+            exception_value: Optional[BaseException],
+            traceback_object: Optional[TracebackType]
+    ) -> None:
         if self._client is not None:
             await self._client.__aexit__(exception_type, exception_value, traceback_object)
 
