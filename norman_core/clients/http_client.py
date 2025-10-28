@@ -16,6 +16,7 @@ from norman_core.clients.objects.response_encoding import ResponseEncoding
 class HttpClient(metaclass=Singleton):
     def __init__(self, base_url: Optional[str] = None, timeout: Optional[float] = None) -> None:
         self._client = None
+        self._open_count = 0
 
         if base_url is None:
             self._base_url = AppConfig.http.base_url
@@ -32,14 +33,20 @@ class HttpClient(metaclass=Singleton):
         }
 
     async def open(self) -> None:
-        await self.close()
-        self._client = httpx.AsyncClient(
-            base_url=self._base_url,
-            timeout=self._timeout
-        )
+        if self._open_count == 0:
+            await self.close()
+            self._client = httpx.AsyncClient(
+                base_url=self._base_url,
+                timeout=self._timeout
+            )
+        self._open_count += 1
 
     async def close(self) -> None:
-        if self._client is not None and not self._client.is_closed:
+        if self._open_count == 0:
+            return
+
+        self._open_count -= 1
+        if self._open_count == 0 and self._client is not None and not self._client.is_closed:
             await self._client.aclose()
 
     async def __aenter__(self) -> "HttpClient":
@@ -52,9 +59,11 @@ class HttpClient(metaclass=Singleton):
             exception_type: Optional[Type[BaseException]],
             exception_value: Optional[BaseException],
             traceback_object: Optional[TracebackType]
-        ) -> None:
+    ) -> None:
         if self._client is not None:
             await self._client.__aexit__(exception_type, exception_value, traceback_object)
+
+        await self.close()
 
     async def request(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]) -> Any:
         headers = self._create_headers(token)
