@@ -16,6 +16,11 @@ class Signup(metaclass=Singleton):
         response = await self._http_client.put("authenticate/signup/default")
         return LoginResponse.model_validate(response)
 
+    async def signup_and_generate_key(self, signup_request: SignupKeyRequest) -> Account:
+        json = signup_request.model_dump(mode="json")
+        response = await self._http_client.put("authenticate/signup/key", json=json)
+        return response
+
     async def signup_with_password(self, signup_request: SignupPasswordRequest) -> Account:
         json = signup_request.model_dump(mode="json")
         response = await self._http_client.put("authenticate/signup/password", json=json)
@@ -25,8 +30,3 @@ class Signup(metaclass=Singleton):
         json = signup_request.model_dump(mode="json")
         response = await self._http_client.put("authenticate/signup/email", json=json)
         return Account.model_validate(response)
-
-    async def signup_and_generate_key(self, signup_request: SignupKeyRequest) -> Account:
-        json = signup_request.model_dump(mode="json")
-        response = await self._http_client.put("authenticate/signup/key", json=json)
-        return response
