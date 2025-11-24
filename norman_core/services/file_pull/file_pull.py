@@ -49,14 +49,6 @@ class FilePull(metaclass=Singleton):
         - ***response*** (`TrackedDownloadUnion`) —
           Union type containing metadata for tracked downloads.
           Includes file size, creation time, type, and download URLs.
-
-        **Example Usage:**
-        ```python
-        file_pull_service = FilePull()
-        metadata = await file_pull_service.get_download_metadata(token=my_token, entity_id="1234abcd")
-        print("Download URL:", metadata.url)
-        print("File type:", metadata.type)
-        ```
         """
         response = await self._http_client.get(f"file-pull/metadata/{entity_id}", token)
         return TypeAdapter(TrackedDownloadUnion).validate_python(response)
@@ -79,23 +71,10 @@ class FilePull(metaclass=Singleton):
         - ***download_request*** (`AssetDownloadRequest`) —
           Request object defining asset upload metadata.
 
-          **Fields:**
-          - **model_id** (`str`) — ID of the model whose assets are being uploaded.
-          - **asset_links** (`List[str]`) — URLs or paths to the asset files.
-          - **description** (`Optional[str]`) — Optional human-readable label.
-
         **Response Structure**
 
         - ***response*** (`List[str]`) —
           List of successfully registered asset link URLs.
-
-        **Example Usage:**
-        ```python
-        request = AssetDownloadRequest(model_id="model_123", asset_links=["s3://bucket/weights.pt"])
-        file_pull_service = FilePull()
-        links = await file_pull_service.submit_asset_links(token=my_token, download_request=request)
-        print("Registered asset links:", links)
-        ```
         """
         json = download_request.model_dump(mode="json")
         response = await self._http_client.post("file-pull/upload/assets", token, json=json)
@@ -129,12 +108,6 @@ class FilePull(metaclass=Singleton):
         - ***response*** (`List[str]`) —
           List of input upload URLs or references created by the system.
 
-        **Example Usage:**
-        ```python
-        request = InputDownloadRequest(invocation_id="inv_456", input_links=["/tmp/input.png"])
-        links = await FilePull().submit_input_links(token=my_token, download_request=request)
-        print("Uploaded input links:", links)
-        ```
         """
         json = download_request.model_dump(mode="json")
         response = await self._http_client.post("file-pull/upload/inputs", token, json=json)
@@ -158,22 +131,10 @@ class FilePull(metaclass=Singleton):
         - ***download_request*** (`OutputDownloadRequest`) —
           Request object containing model output details.
 
-          **Fields:**
-          - **invocation_id** (`str`) — ID of the invocation whose outputs are being uploaded.
-          - **output_links** (`List[str]`) — URLs or file paths to the output artifacts.
-          - **metadata** (`Optional[dict]`) — Optional output-specific metadata.
-
         **Response Structure**
 
         - ***response*** (`List[str]`) —
           List of uploaded or registered output link URLs.
-
-        **Example Usage:**
-        ```python
-        request = OutputDownloadRequest(invocation_id="inv_789", output_links=["/tmp/output.png"])
-        links = await FilePull().submit_output_links(token=my_token, download_request=request)
-        print("Uploaded output links:", links)
-        ```
         """
         json = download_request.model_dump(mode="json")
         response = await self._http_client.post("file-pull/upload/outputs", token, json=json)

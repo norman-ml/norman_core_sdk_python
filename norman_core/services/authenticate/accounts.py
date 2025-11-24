@@ -42,14 +42,6 @@ class Accounts(metaclass=Singleton):
 
         - ***response*** (`dict[str, Account]`) —
           Dictionary mapping account IDs to their corresponding `Account` objects.
-
-        **Example Usage:**
-        ```python
-        accounts_service = Accounts()
-        accounts = await accounts_service.get_accounts(token=my_token)
-        for account_id, account in accounts.items():
-            print(account_id, account.name)
-        ```
         """
         json = None
         if constraints is not None:
@@ -77,13 +69,6 @@ class Accounts(metaclass=Singleton):
         **Response Structure**
 
         - ***response*** (`List[Account]`) — List of newly created accounts, validated against the `Account` schema.
-
-        **Example Usage:**
-        ```python
-        new_accounts = [Account(name="Alice"), Account(name="Bob")]
-        accounts_service = Accounts()
-        created = await accounts_service.create_accounts(token=my_token, accounts=new_accounts)
-        ```
         """
         json = TypeAdapter(list[Account]).dump_python(accounts, mode="json")
 
@@ -113,13 +98,6 @@ class Accounts(metaclass=Singleton):
 
         - ***response*** (`int`) —
           The number of entities modified or replaced.
-
-        **Example Usage:**
-        ```python
-        accounts_service = Accounts()
-        replaced_count = await accounts_service.replace_accounts(token=my_token, accounts=new_accounts)
-        print(f"Replaced {replaced_count} accounts.")
-        ```
         """
         json = None
         if accounts is not None:
@@ -149,15 +127,6 @@ class Accounts(metaclass=Singleton):
         **Response Structure**
 
         - ***response*** (`int`) — Number of accounts affected by the update operation.
-
-        **Example Usage:**
-        ```python
-        update_schema = Account.UpdateSchema(name="Updated Name")
-        constraints = QueryConstraints(filters={"role": "user"})
-        accounts_service = Accounts()
-        count = await accounts_service.update_accounts(token=my_token, account=update_schema, constraints=constraints)
-        print(f"Updated {count} accounts.")
-        ```
         """
         parsed_constraints = None
         if constraints is not None:

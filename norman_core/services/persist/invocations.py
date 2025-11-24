@@ -40,23 +40,10 @@ class Invocations(metaclass=Singleton):
         - ***constraints*** (`Optional[QueryConstraints]`) —
           Optional query object defining filters and pagination.
 
-          **Example Fields:**
-          - `limit` (`int`) — Maximum number of records to return.
-          - `offset` (`int`) — Number of records to skip.
-          - `filters` (`dict`) — Attribute-based filtering rules.
-
         **Response Structure**
 
         - ***response*** (`dict[str, Invocation]`) —
           Dictionary mapping invocation IDs to their corresponding `Invocation` objects.
-
-        **Example Usage:**
-        ```python
-        invocations_service = Invocations()
-        invocations = await invocations_service.get_invocations(token=my_token)
-        for inv_id, inv in invocations.items():
-            print(inv_id, inv.model_name)
-        ```
         """
         json = None
         if constraints is not None:
@@ -82,24 +69,10 @@ class Invocations(metaclass=Singleton):
         - ***invocations*** (`List[Invocation]`) —
           List of `Invocation` objects representing executions to persist.
 
-          **Each invocation includes:**
-          - **model_id** (`str`) — ID of the model executed.
-          - **inputs** (`dict`) — Input data or references used in the execution.
-          - **outputs** (`dict`) — Model outputs or references.
-          - **status** (`str`) — Execution status (`"running"`, `"completed"`, etc.).
-          - **start_time / end_time** (`datetime`) — Execution timing data.
-
         **Response Structure**
 
         - ***response*** (`List[Invocation]`) —
           List of successfully created invocation objects returned from the server.
-
-        **Example Usage:**
-        ```python
-        inv = Invocation(model_id="model_123", status="completed")
-        result = await Invocations().create_invocations(token=my_token, invocations=[inv])
-        print(f"Created {len(result)} invocation record(s).")
-        ```
         """
         json = TypeAdapter(list[Invocation]).dump_python(invocations, mode="json")
         response = await self._http_client.post("persist/invocations", token, json=json)
@@ -125,22 +98,11 @@ class Invocations(metaclass=Singleton):
 
         - ***model_name_counter*** (`dict[str, int]`) —
           Mapping of model names to the number of invocations to create.
-          For example:
-          ```python
-          {"image_reverser_model": 3, "text_summary_model": 2}
-          ```
 
         **Response Structure**
 
         - ***response*** (`List[Invocation]`) —
           List of newly created invocation records corresponding to the counts provided.
-
-        **Example Usage:**
-        ```python
-        model_counts = {"text_reverser": 2, "image_captioner": 1}
-        invocations = await Invocations().create_invocations_by_model_names(token=my_token, model_name_counter=model_counts)
-        print("Created invocations:", [i.model_name for i in invocations])
-        ```
         """
         response = await self._http_client.post("persist/invocations/by-name", token, json=model_name_counter)
         return TypeAdapter(list[Invocation]).validate_python(response)
@@ -163,20 +125,10 @@ class Invocations(metaclass=Singleton):
         - ***constraints*** (`Optional[QueryConstraints]`) —
           Optional query object for filtering historical invocations.
 
-          **Example Fields:**
-          - `date_range` (`tuple[datetime, datetime]`) — Time window for fetching records.
-          - `status` (`str`) — Filter by invocation status.
-          - `model_name` (`str`) — Retrieve history for a specific model.
-
         **Response Structure**
 
         - ***response*** (`dict[str, Invocation]`) —
           Dictionary mapping invocation IDs to corresponding historical invocation objects.
-
-        **Example Usage:**
-        ```python
-        history = await Invocations().get_invocation_history(token=my_token)
-        ```
         """
         json = None
         if constraints is not None:

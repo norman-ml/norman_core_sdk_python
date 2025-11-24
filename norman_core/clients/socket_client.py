@@ -42,12 +42,13 @@ class SocketClient:
           The socket pairing information returned from the `FilePush` API.
           Contains authentication headers, encryption keys, and socket details.
 
-          **Key Fields:**
-          - **host** (`str`) — Target socket hostname.
-          - **port** (`int`) — Socket port number.
-          - **encryption_key** (`str`) — Base64-encoded encryption key.
-          - **nonce** (`str`) — Base64-encoded nonce used for ChaCha20 encryption.
-          - **authentication_header** (`str`) — Base64-encoded header for request authentication.
+          **SocketPairingResponse:**
+
+          - `host` (`str`) — Target socket hostname.
+          - `port` (`int`) — Socket port number.
+          - `encryption_key` (`str`) — Base64-encoded encryption key.
+          - `nonce` (`str`) — Base64-encoded nonce used for ChaCha20 encryption.
+          - `authentication_header` (`str`) — Base64-encoded header for request authentication.
 
         - ***asset_stream*** (`AsyncBufferedReader`) —
           Asynchronous stream reader providing the file or asset data to be uploaded.
@@ -92,12 +93,13 @@ class SocketClient:
         - ***socket_info*** (`SocketPairingResponse`) —
           The socket pairing information returned from `FilePush`.
 
-          **Key Fields:**
-          - **host** (`str`) — Target socket hostname.
-          - **port** (`int`) — Socket port number.
-          - **encryption_key** (`str`) — Base64-encoded ChaCha20 encryption key.
-          - **nonce** (`str`) — Base64-encoded nonce used for encryption.
-          - **authentication_header** (`str`) — Base64-encoded header prepended to the stream.
+          **SocketPairingResponse**
+
+          - `host` (`str`) — Target socket hostname.
+          - `port` (`int`) — Socket port number.
+          - `encryption_key` (`str`) — Base64-encoded ChaCha20 encryption key.
+          - `nonce` (`str`) — Base64-encoded nonce used for encryption.
+          - `authentication_header` (`str`) — Base64-encoded header prepended to the stream.
 
         - ***file_stream*** (`AsyncGenerator[bytes, None]`) —
           Asynchronous generator yielding raw binary chunks to be written.

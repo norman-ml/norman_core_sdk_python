@@ -38,31 +38,10 @@ class Models(metaclass=Singleton):
           Optional request object specifying filters and pagination.
           If not provided, defaults to fetching all completed (`finished_models=True`) models.
 
-          **Fields:**
-          - **constraints** (`Optional[QueryConstraints]`) — Query filter rules.
-          - **finished_models** (`bool`) — Whether to include only completed models.
-          - **include_archived** (`Optional[bool]`) — Include archived models if `True`.
-          - **limit / offset** (`Optional[int]`) — Pagination parameters.
-
         **Response Structure**
 
         - ***response*** (`dict[str, Model]`) —
           Dictionary mapping model IDs to corresponding `Model` objects.
-
-          **Each `Model` includes:**
-          - **id** (`str`) — Model identifier.
-          - **name** (`str`) — Model name.
-          - **version_label** (`str`) — Version or label (e.g., `"v1.0"`).
-          - **description** (`str`) — Model description.
-          - **created_at / updated_at** (`datetime`) — Timestamps for creation and last modification.
-
-        **Example Usage:**
-        ```python
-        models_service = Models()
-        models = await models_service.get_models(token=my_token)
-        for model_id, model in models.items():
-            print(f"{model.name} ({model.version_label})")
-        ```
         """
         json = constraint.model_dump(mode="json")
         response = await self._http_client.post("persist/models/get", token, json=json)
@@ -83,25 +62,10 @@ class Models(metaclass=Singleton):
         - ***models*** (`List[Model]`) —
           List of `Model` objects to be created.
 
-          **Each `Model` includes:**
-          - **name** (`str`) — Model name.
-          - **version_label** (`str`) — Version or tag.
-          - **short_description** (`str`) — Brief model summary.
-          - **long_description** (`str`) — Detailed description.
-          - **inputs / outputs** (`List[SignatureConfig]`) — Model I/O definitions.
-          - **assets** (`List[AssetConfig]`) — Associated files and weights.
-
         **Response Structure**
 
         - ***response*** (`dict[str, Model]`) —
           Mapping of newly created model IDs to their corresponding model objects.
-
-        **Example Usage:**
-        ```python
-        new_model = Model(name="text_reverser", version_label="v1.0")
-        created = await Models().create_models(token=my_token, models=[new_model])
-        print("Created model IDs:", list(created.keys()))
-        ```
         """
         json = None
         if models is not None:
@@ -186,11 +150,6 @@ class Models(metaclass=Singleton):
         - ***model_previews*** (`List[ModelPreview]`) —
           List of model previews to be marked as active.
 
-          **Each `ModelPreview` includes:**
-          - **id** (`str`) — Model preview identifier.
-          - **model_id** (`str`) — ID of the associated model.
-          - **version_label** (`str`) — Version label to set active.
-
         **Response Structure**
 
         - ***response*** (`List[ModelPreview]`) —
@@ -218,10 +177,6 @@ class Models(metaclass=Singleton):
         - ***constraints*** (`QueryConstraints`) —
           Query constraints defining which models to delete.
           Supports filters like model name, ID, or status.
-
-          **Example Fields:**
-          - `filters` (`dict`) — Field-value filters for model attributes.
-          - `limit` (`Optional[int]`) — Maximum number of models to delete.
 
         **Response Structure**
 
