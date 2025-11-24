@@ -38,6 +38,7 @@ class HttpClient(metaclass=Singleton):
                 base_url=self._base_url,
                 timeout=self._timeout
             )
+            await self._client.__aenter__()
         self._reentrance_count += 1
 
     async def close(self) -> None:
@@ -45,13 +46,14 @@ class HttpClient(metaclass=Singleton):
             raise Exception("HttpClient close called before any open — unmatched close detected")
 
         self._reentrance_count -= 1
-        if self._reentrance_count == 0 and self._client is not None and not self._client.is_closed:
-            await self._client.aclose()
+        if self._reentrance_count == 0 and self._client is not None:
+            await self._client.__aexit__(None, None, None)  # ← Move here
+            if not self._client.is_closed:
+                await self._client.aclose()
             self._client = None
 
     async def __aenter__(self) -> "HttpClient":
         await self.open()
-        await self._client.__aenter__()
         return self
 
     async def __aexit__(
@@ -59,10 +61,7 @@ class HttpClient(metaclass=Singleton):
             exception_type: Optional[Type[BaseException]],
             exception_value: Optional[BaseException],
             traceback_object: Optional[TracebackType]
-        ) -> None:
-        if self._client is not None:
-            await self._client.__aexit__(exception_type, exception_value, traceback_object)
-
+    ) -> None:
         await self.close()
 
     async def request(self, method: str, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding = ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]) -> Any:
