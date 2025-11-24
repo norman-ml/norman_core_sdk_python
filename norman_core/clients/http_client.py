@@ -161,25 +161,204 @@ class HttpClient(metaclass=Singleton):
         response = await self._client.send(request, stream=stream_response)
         return self._parse_response(response, response_encoding)
 
-    async def get(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding=ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]) -> Any:
-        """Shortcut for `request("GET", ...)`. See `request()` for full details."""
+    async def get(
+        self,
+        endpoint: str,
+        token: Optional[Sensitive[str]] = None,
+        *,
+        response_encoding: ResponseEncoding = ResponseEncoding.Json,
+        **kwargs: Unpack[RequestKwargs]
+    ) -> Any:
+        """
+        **Coroutine**
+
+        Send an HTTP **GET** request to the given endpoint.
+
+        This is a convenience wrapper for:
+        ```python
+        await self.request("GET", endpoint, ...)
+        ```
+
+        **Parameters**
+
+        - ***endpoint*** (`str`) —
+          API path relative to the base URL.
+
+        - ***token*** (`Optional[Sensitive[str]]`) —
+          Optional bearer token for authorization.
+
+        - ***response_encoding*** (`ResponseEncoding`) —
+          Determines how the response body is decoded:
+          `Json`, `Text`, `Bytes`, or `Iterator`.
+
+        - ***kwargs*** (`RequestKwargs`) —
+          Additional parameters forwarded to `httpx`, such as:
+          - `params` (`dict`) — Query parameters
+          - `headers` (`dict`) — Extra headers
+          - `timeout` (`float`)
+          - `json`, `data` inputs, etc.
+
+        **Returns**
+
+        - Parsed response according to `response_encoding`:
+          - `Json`  → `dict` or `list`
+          - `Text`  → `str`
+          - `Bytes` → `bytes`
+          - `Iterator` → `(headers, async iterator over bytes)`
+
+        **Example**
+        ```python
+        async with HttpClient() as client:
+            models = await client.get("models/list", token=my_token)
+        ```
+        """
         return await self.request("GET", endpoint, token, response_encoding=response_encoding, **kwargs)
 
-    async def post(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding=ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]) -> Any:
-        """Shortcut for `request("POST", ...)`. See `request()` for full details."""
+
+    async def post(
+        self,
+        endpoint: str,
+        token: Optional[Sensitive[str]] = None,
+        *,
+        response_encoding: ResponseEncoding = ResponseEncoding.Json,
+        **kwargs: Unpack[RequestKwargs]
+    ) -> Any:
+        """
+        **Coroutine**
+
+        Send an HTTP **POST** request to the given endpoint.
+
+        This is a convenience wrapper around:
+        ```python
+        await self.request("POST", endpoint, ...)
+        ```
+
+        **Parameters**
+
+        - ***endpoint*** (`str`) — API path relative to the base URL.
+        - ***token*** (`Optional[Sensitive[str]]`) — Authorization token.
+        - ***response_encoding*** (`ResponseEncoding`) — Response decoding mode.
+        - ***kwargs*** (`RequestKwargs`) — Additional request arguments such as:
+          - `json` (`Any`) — JSON request body
+          - `data` (`dict`) — Form data
+          - `params` (`dict`) — URL query parameters
+
+        **Returns**
+
+        - The decoded server response according to `response_encoding`.
+
+        **Example**
+        ```python
+        payload = {"name": "test"}
+        async with HttpClient() as client:
+            created = await client.post("models/create", json=payload, token=my_token)
+        ```
+        """
         return await self.request("POST", endpoint, token, response_encoding=response_encoding, **kwargs)
 
-    async def put(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding=ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]) -> Any:
-        """Shortcut for `request("PUT", ...)`. See `request()` for full details."""
+
+    async def put(
+        self,
+        endpoint: str,
+        token: Optional[Sensitive[str]] = None,
+        *,
+        response_encoding: ResponseEncoding = ResponseEncoding.Json,
+        **kwargs: Unpack[RequestKwargs]
+    ) -> Any:
+        """
+        **Coroutine**
+
+        Send an HTTP **PUT** request to the given endpoint.
+
+        **Parameters**
+
+        - ***endpoint*** (`str`) — Target API path.
+        - ***token*** (`Optional[Sensitive[str]]`) — Optional bearer token.
+        - ***response_encoding*** (`ResponseEncoding`) — Response parsing strategy.
+        - ***kwargs*** (`RequestKwargs`) — Extra arguments passed directly to `httpx`.
+
+        **Returns**
+
+        - Parsed response according to the selected `response_encoding`.
+
+        **Example**
+        ```python
+        update = {"enabled": True}
+        async with HttpClient() as client:
+            resp = await client.put("models/update/123", json=update, token=my_token)
+        ```
+        """
         return await self.request("PUT", endpoint, token, response_encoding=response_encoding, **kwargs)
 
-    async def patch(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding=ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]) -> Any:
-        """Shortcut for `request("PATCH", ...)`. See `request()` for full details."""
+
+    async def patch(
+        self,
+        endpoint: str,
+        token: Optional[Sensitive[str]] = None,
+        *,
+        response_encoding: ResponseEncoding = ResponseEncoding.Json,
+        **kwargs: Unpack[RequestKwargs]
+    ) -> Any:
+        """
+        **Coroutine**
+
+        Send an HTTP **PATCH** request to modify fields of an existing resource.
+
+        **Parameters**
+
+        - ***endpoint*** (`str`) — Endpoint relative to the base URL.
+        - ***token*** (`Optional[Sensitive[str]]`) — Bearer token for authentication.
+        - ***response_encoding*** (`ResponseEncoding`) — Output decoding mode.
+        - ***kwargs*** (`RequestKwargs`) — Additional keyword arguments such as:
+          - `json` — Patch body
+          - `params` — Query parameters
+
+        **Returns**
+
+        - Decoded server response.
+
+        **Example**
+        ```python
+        patch_data = {"description": "Updated text"}
+        async with HttpClient() as client:
+            resp = await client.patch("models/modify/123", json=patch_data, token=my_token)
+        ```
+        """
         return await self.request("PATCH", endpoint, token, response_encoding=response_encoding, **kwargs)
 
-    async def delete(self, endpoint: str, token: Optional[Sensitive[str]] = None, *, response_encoding=ResponseEncoding.Json, **kwargs: Unpack[RequestKwargs]) -> Any:
-        """Shortcut for `request("DELETE", ...)`. See `request()` for full details."""
+
+    async def delete(
+        self,
+        endpoint: str,
+        token: Optional[Sensitive[str]] = None,
+        *,
+        response_encoding: ResponseEncoding = ResponseEncoding.Json,
+        **kwargs: Unpack[RequestKwargs]
+    ) -> Any:
+        """
+        **Coroutine**
+
+        Send an HTTP **DELETE** request to remove a resource.
+
+        **Parameters**
+
+        - ***endpoint*** (`str`) — Resource path to delete.
+        - ***token*** (`Optional[Sensitive[str]]`) — Authorization token.
+        - ***response_encoding*** (`ResponseEncoding`) — How to decode the response.
+        - ***kwargs*** (`RequestKwargs`) — Additional supported HTTP arguments.
+
+        **Returns**
+
+        - Parsed response (typically JSON or text).
+
+        **Example**
+        ```python
+        async with HttpClient() as client:
+            resp = await client.delete("models/123", token=my_token)
+        ```
+        """
         return await self.request("DELETE", endpoint, token, response_encoding=response_encoding, **kwargs)
+
 
     async def post_multipart(
         self,

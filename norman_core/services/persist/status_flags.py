@@ -43,38 +43,10 @@ class StatusFlags(metaclass=Singleton):
         - ***constraints*** (`Optional[QueryConstraints]`) —
           Optional query object for filtering or pagination.
 
-          **Example Fields:**
-          - `filters` (`dict`) — Field-value filters (e.g., `"entity_type": "model"`).
-          - `limit` (`int`) — Maximum number of results to return.
-          - `offset` (`int`) — Number of items to skip for pagination.
-          - `sort_by` (`str`) — Field used for sorting (e.g., `"updated_at"`).
-          - `descending` (`bool`) — Whether to sort results in descending order.
-
         **Response Structure**
 
         - ***response*** (`dict[str, list[StatusFlag]]`) —
           Dictionary mapping entity IDs to a list of `StatusFlag` objects.
-
-          **Each `StatusFlag` includes:**
-          - **id** (`str`) — Unique identifier for the flag.
-          - **entity_id** (`str`) — ID of the entity the flag belongs to.
-          - **type** (`str`) — Category or type of the flag (e.g., `"health"`, `"operation"`).
-          - **value** (`bool`) — Current flag state or value.
-          - **created_at / updated_at** (`datetime`) — Timestamps for flag creation and last update.
-
-        **Example Usage:**
-        ```python
-        status_flags_service = StatusFlags()
-
-        # Retrieve all status flags for models
-        constraints = QueryConstraints(filters={"entity_type": "model"})
-        flags = await status_flags_service.get_status_flags(token=my_token, constraints=constraints)
-
-        for entity_id, entity_flags in flags.items():
-            print(f"Entity: {entity_id}")
-            for flag in entity_flags:
-                print(f"  - {flag.type}: {flag.value}")
-        ```
         """
         json = None
         if constraints is not None:

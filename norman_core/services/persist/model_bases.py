@@ -39,12 +39,6 @@ class ModelBases(metaclass=Singleton):
         - ***request*** (`Optional[GetModelsRequest]`) —
           Optional filtering and pagination request specifying which models to retrieve.
 
-          **Fields:**
-          - **constraints** (`Optional[QueryConstraints]`) — Optional filtering and sorting rules.
-          - **finished_models** (`bool`) — Whether to include only completed models.
-          - **include_archived** (`Optional[bool]`) — Whether to include archived models.
-          - **limit / offset** (`Optional[int]`) — Pagination parameters.
-
         **Response Structure**
 
         - ***response*** (`dict[str, ModelBase]`) —
@@ -56,14 +50,6 @@ class ModelBases(metaclass=Singleton):
           - **version** (`str`) — Version label or tag (e.g., `"v1.0"`).
           - **description** (`Optional[str]`) — Textual description of the model.
           - **created_at** (`datetime`) — Timestamp when the model was created.
-
-        **Example Usage:**
-        ```python
-        model_bases_service = ModelBases()
-        models = await model_bases_service.get_model_bases(token=my_token)
-        for model_id, base in models.items():
-            print(f"{base.name} (v{base.version})")
-        ```
         """
         json = constraint.model_dump(mode="json")
         response = await self._http_client.post("persist/models/bases/get", token, json=json)

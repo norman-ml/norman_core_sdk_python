@@ -43,36 +43,10 @@ class Notifications(metaclass=Singleton):
         - ***constraints*** (`Optional[QueryConstraints]`) —
           Optional query object for filtering, sorting, or limiting results.
 
-          **Example Fields:**
-          - `filters` (`dict`) — Filter notifications by type, severity, or status.
-          - `limit` (`int`) — Maximum number of notifications to retrieve.
-          - `offset` (`int`) — Number of notifications to skip for pagination.
-          - `sort_by` (`str`) — Attribute used for sorting (e.g., `"created_at"`).
-          - `descending` (`bool`) — Whether to sort results in descending order.
-
         **Response Structure**
 
         - ***response*** (`List[Notification]`) —
           A list of `Notification` objects matching the query.
-
-          **Each `Notification` includes:**
-          - **id** (`str`) — Unique identifier for the notification.
-          - **type** (`str`) — Category of notification (e.g., `"system"`, `"execution"`, `"alert"`).
-          - **message** (`str`) — Human-readable message or description.
-          - **created_at** (`datetime`) — Timestamp when the notification was created.
-          - **read** (`bool`) — Whether the notification has been read.
-
-        **Example Usage:**
-        ```python
-        notifications_service = Notifications()
-
-        # Retrieve the 10 most recent notifications
-        constraints = QueryConstraints(limit=10, sort_by="created_at", descending=True)
-        notifications = await notifications_service.get_notifications(token=my_token, constraints=constraints)
-
-        for note in notifications:
-            print(f"[{note.created_at}] {note.message}")
-        ```
         """
         json = None
         if constraints is not None:
