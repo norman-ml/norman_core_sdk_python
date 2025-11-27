@@ -43,7 +43,7 @@ class HttpClient(metaclass=Singleton):
 
     async def close(self) -> None:
         if self._reentrance_count < 1:
-            raise Exception("HttpClient close called before any open — unmatched close detected")
+            raise Exception("HttpClient close without any open clients")
 
         self._reentrance_count -= 1
         if self._reentrance_count == 0 and self._client is not None:
