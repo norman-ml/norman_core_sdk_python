@@ -30,7 +30,7 @@ class Models(metaclass=Singleton):
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
 
         response = await self._http_client.post("persist/models/", token, json=json)
-        return TypeAdapter(dict[str, Model]).validate_python(response)
+        return TypeAdapter(list[Model]).validate_python(response)
 
     
     async def upgrade_models(self, token: Sensitive[str], models: list[Model]) -> dict[str, Model]:
@@ -39,7 +39,7 @@ class Models(metaclass=Singleton):
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
 
         response = await self._http_client.post("persist/models/version", token, json=json)
-        return TypeAdapter(dict[str, Model]).validate_python(response)
+        return TypeAdapter(list[Model]).validate_python(response)
 
     
     async def replace_models(self, token: Sensitive[str], models: list[Model]) -> dict[str, Model]:
@@ -48,7 +48,7 @@ class Models(metaclass=Singleton):
             json = TypeAdapter(list[Model]).dump_python(models, mode="json")
 
         response = await self._http_client.patch("persist/models/", token, json=json)
-        return TypeAdapter(dict[str, Model]).validate_python(response)
+        return TypeAdapter(list[Model]).validate_python(response)
 
     
     async def set_active_model(self, token: Sensitive[str], model_previews: list[ModelPreview]) -> list[ModelPreview]:
