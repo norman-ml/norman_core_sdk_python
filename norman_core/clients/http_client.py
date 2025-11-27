@@ -47,7 +47,7 @@ class HttpClient(metaclass=Singleton):
 
         self._reentrance_count -= 1
         if self._reentrance_count == 0 and self._client is not None:
-            await self._client.__aexit__(None, None, None)  # ← Move here
+            await self._client.__aexit__(None, None, None)
             if not self._client.is_closed:
                 await self._client.aclose()
             self._client = None
