@@ -58,10 +58,19 @@ class HttpClient(metaclass=Singleton):
         self._client = None
         self._reentrance_count = 0
 
-        self._base_url = base_url or AppConfig.http.base_url
-        self._timeout = timeout or AppConfig.http.timeout_seconds
+        if base_url is None:
+            self._base_url = AppConfig.http.base_url
+        else:
+            self._base_url = base_url
 
-        self._headers = {"Content-Type": "application/json"}
+        if timeout is None:
+            self._timeout = AppConfig.http.timeout_seconds
+        else:
+            self._timeout = timeout
+
+        self._headers = {
+            "Content-Type": "application/json"
+        }
 
     async def open(self) -> None:
         """
@@ -71,7 +80,11 @@ class HttpClient(metaclass=Singleton):
         This is automatically handled during context manager entry.
         """
         if self._reentrance_count == 0:
-            self._client = httpx.AsyncClient(base_url=self._base_url, timeout=self._timeout)
+            self._client = httpx.AsyncClient(
+                base_url=self._base_url,
+                timeout=self._timeout
+            )
+            await self._client.__aenter__()
         self._reentrance_count += 1
 
     async def close(self) -> None:
@@ -83,17 +96,18 @@ class HttpClient(metaclass=Singleton):
         Raises an exception if called without a matching open.
         """
         if self._reentrance_count < 1:
-            raise Exception("HttpClient close called before any open — unmatched close detected.")
+            raise Exception("HttpClient close without any open clients")
 
         self._reentrance_count -= 1
-        if self._reentrance_count == 0 and self._client is not None and not self._client.is_closed:
-            await self._client.aclose()
+        if self._reentrance_count == 0 and self._client is not None:
+            await self._client.__aexit__(None, None, None)
+            if not self._client.is_closed:
+                await self._client.aclose()
             self._client = None
 
     async def __aenter__(self) -> "HttpClient":
         """Support `async with` usage for automatic session management."""
         await self.open()
-        await self._client.__aenter__()
         return self
 
     async def __aexit__(
@@ -103,9 +117,8 @@ class HttpClient(metaclass=Singleton):
         traceback_object: Optional[TracebackType]
     ) -> None:
         """Close the session upon context exit."""
-        if self._client is not None:
-            await self._client.__aexit__(exception_type, exception_value, traceback_object)
         await self.close()
+
 
     async def request(
         self,
@@ -157,6 +170,7 @@ class HttpClient(metaclass=Singleton):
         """
         headers = self._create_headers(token)
         request = self._client.build_request(method, endpoint, headers=headers, **kwargs)
+
         stream_response = response_encoding == ResponseEncoding.Iterator
         response = await self._client.send(request, stream=stream_response)
         return self._parse_response(response, response_encoding)
