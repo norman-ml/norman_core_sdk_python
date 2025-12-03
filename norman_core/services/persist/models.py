@@ -15,11 +15,8 @@ class Models(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
     
-    async def get_models(self, token: Sensitive[str], request: Optional[GetModelsRequest] = None) -> dict[str, Model]:
-        if request is None:
-            request = GetModelsRequest(constraints=None, finished_models=True)
-        json = request.model_dump(mode="json")
-
+    async def get_models(self, token: Sensitive[str], constraint: Optional[QueryConstraints] = None) -> dict[str, Model]:
+        json = constraint.model_dump(mode="json")
         response = await self._http_client.post("persist/models/get", token, json=json)
         return TypeAdapter(dict[str, Model]).validate_python(response)
 
