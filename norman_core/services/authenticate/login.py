@@ -3,6 +3,7 @@ from norman_objects.services.authenticate.login.api_key_login_request import Api
 from norman_objects.services.authenticate.login.email_password_login_request import EmailPasswordLoginRequest
 from norman_objects.services.authenticate.login.login_response import LoginResponse
 from norman_objects.services.authenticate.login.name_password_login_request import NamePasswordLoginRequest
+from norman_objects.shared.authentication.account_authentication_methods import AccountAuthenticationMethods
 
 from norman_utils_external.singleton import Singleton
 from norman_core.clients.http_client import HttpClient
@@ -11,6 +12,20 @@ from norman_core.clients.http_client import HttpClient
 class Login(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
+    # ==================== Get Authentication Factors (NEW) ====================
+
+    async def get_authentication_factors_by_id(self, account_id: str) -> AccountAuthenticationMethods:
+        response = await self._http_client.post(f"authenticate/login/get/authentication/factors/by-id/{account_id}")
+        return AccountAuthenticationMethods.model_validate(response)
+
+    async def get_authentication_factors_by_name(self, account_name: str) -> AccountAuthenticationMethods:
+        response = await self._http_client.post(f"authenticate/login/get/authentication/factors/by-name/{account_name}")
+        return AccountAuthenticationMethods.model_validate(response)
+
+    async def get_authentication_factors_by_email(self, email: str) -> AccountAuthenticationMethods:
+        response = await self._http_client.post(f"authenticate/login/get/authentication/factors/by-email/{email}")
+        return AccountAuthenticationMethods.model_validate(response)
+
 
     async def login_default(self, account_id: str) -> LoginResponse:
         response = await self._http_client.post(f"authenticate/login/default/{account_id}")
