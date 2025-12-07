@@ -26,7 +26,6 @@ class Login(metaclass=Singleton):
         response = await self._http_client.post(f"authenticate/login/get/authentication/factors/by-email/{email}")
         return AccountAuthenticationMethods.model_validate(response)
 
-
     async def login_default(self, account_id: str) -> LoginResponse:
         response = await self._http_client.post(f"authenticate/login/default/{account_id}")
         return LoginResponse.model_validate(response)
