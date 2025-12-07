@@ -13,6 +13,18 @@ class Retrieve(metaclass=Singleton):
 
     The `Retrieve` class allows direct download of stored binary content via
     iterator-based responses for efficient streaming.
+    
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the Retrieve service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -35,38 +47,22 @@ class Retrieve(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***account_id*** (`str`) —
+        - ***account_id*** (`str`) -
           The unique identifier of the account that owns the model.
 
-        - ***model_id*** (`str`) —
+        - ***model_id*** (`str`) -
           The unique identifier of the model to which the asset belongs.
 
-        - ***asset_id*** (`str`) —
+        - ***asset_id*** (`str`) -
           The unique identifier of the asset file to retrieve.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`AsyncIterator[bytes]`) —
+        - ***response*** (`AsyncIterator[bytes]`) -
           Asynchronous byte stream yielding the asset data in chunks.
-
-        **Example Usage:**
-        ```python
-        retrieve_service = Retrieve()
-        stream = await retrieve_service.get_model_asset(
-            token=my_token,
-            account_id="acc_123",
-            model_id="mod_456",
-            asset_id="weights"
-        )
-
-        # Stream the file and write locally
-        with open("weights.bin", "wb") as f:
-            async for chunk in stream:
-                f.write(chunk)
-        ```
         """
         endpoint = f"retrieve/asset/{account_id}/{model_id}/{asset_id}"
         return await self._http_client.get(endpoint, token, response_encoding=ResponseEncoding.Iterator)
@@ -89,40 +85,25 @@ class Retrieve(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***account_id*** (`str`) —
+        - ***account_id*** (`str`) -
           ID of the account that owns the invocation.
 
-        - ***model_id*** (`str`) —
+        - ***model_id*** (`str`) -
           ID of the model associated with the invocation.
 
-        - ***invocation_id*** (`str`) —
+        - ***invocation_id*** (`str`) -
           Unique identifier of the invocation.
 
-        - ***input_id*** (`str`) —
+        - ***input_id*** (`str`) -
           Unique identifier of the invocation input to retrieve.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`AsyncIterator[bytes]`) —
+        - ***response*** (`AsyncIterator[bytes]`) -
           Asynchronous byte stream yielding the input file data.
-
-        **Example Usage:**
-        ```python
-        stream = await Retrieve().get_invocation_input(
-            token=my_token,
-            account_id="acc_123",
-            model_id="mod_456",
-            invocation_id="inv_789",
-            input_id="input_001"
-        )
-
-        async with aiofiles.open("input.png", "wb") as f:
-            async for chunk in stream:
-                await f.write(chunk)
-        ```
         """
         endpoint = f"retrieve/input/{account_id}/{model_id}/{invocation_id}/{input_id}"
         return await self._http_client.get(endpoint, token, response_encoding=ResponseEncoding.Iterator)
@@ -145,41 +126,25 @@ class Retrieve(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***account_id*** (`str`) —
+        - ***account_id*** (`str`) -
           ID of the account that owns the invocation.
 
-        - ***model_id*** (`str`) —
+        - ***model_id*** (`str`) -
           ID of the model that produced the output.
 
-        - ***invocation_id*** (`str`) —
+        - ***invocation_id*** (`str`) -
           Unique identifier of the invocation.
 
-        - ***output_id*** (`str`) —
+        - ***output_id*** (`str`) -
           Unique identifier of the output to retrieve.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`AsyncIterator[bytes]`) —
+        - ***response*** (`AsyncIterator[bytes]`) -
           Asynchronous byte stream yielding the invocation output data.
-
-        **Example Usage:**
-        ```python
-        retrieve_service = Retrieve()
-        stream = await retrieve_service.get_invocation_output(
-            token=my_token,
-            account_id="acc_123",
-            model_id="mod_456",
-            invocation_id="inv_789",
-            output_id="output_image"
-        )
-
-        with open("output.png", "wb") as f:
-            async for chunk in stream:
-                f.write(chunk)
-        ```
         """
         endpoint = f"retrieve/output/{account_id}/{model_id}/{invocation_id}/{output_id}"
         return await self._http_client.get(endpoint, token, response_encoding=ResponseEncoding.Iterator)

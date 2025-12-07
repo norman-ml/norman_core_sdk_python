@@ -16,8 +16,17 @@ class Login(metaclass=Singleton):
     API key login, password-based login (by ID, name, or email),
     and email-based one-time password (OTP) verification.
 
-    Each method communicates with the `authenticate/login` endpoints
-    using the internal HTTP client.
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the Login service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+    
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -31,12 +40,12 @@ class Login(metaclass=Singleton):
 
         **Parameters**
 
-        - ***account_id*** (`str`) —
+        - ***account_id*** (`str`) -
           The unique identifier of the account to log into.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`LoginResponse`) —
+        - ***response*** (`LoginResponse`) -
           The authenticated session object, containing token and account details.
         """
         response = await self._http_client.post(f"authenticate/login/default/{account_id}")
@@ -50,12 +59,12 @@ class Login(metaclass=Singleton):
 
         **Parameters**
 
-        - ***api_key_login_request*** (`ApiKeyLoginRequest`) —
+        - ***api_key_login_request*** (`ApiKeyLoginRequest`) -
           Request object containing the API key credentials.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`LoginResponse`) —
+        - ***response*** (`LoginResponse`) -
           The login response containing the authentication token and account metadata.
         """
         json = api_key_login_request.model_dump(mode="json")
@@ -70,12 +79,12 @@ class Login(metaclass=Singleton):
 
         **Parameters**
 
-        - ***login_request*** (`AccountIDPasswordLoginRequest`) —
+        - ***login_request*** (`AccountIDPasswordLoginRequest`) -
           Request object containing the account ID and password.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`LoginResponse`) —
+        - ***response*** (`LoginResponse`) -
           Contains authentication token, session data, and account metadata.
         """
         json = login_request.model_dump(mode="json")
@@ -90,12 +99,12 @@ class Login(metaclass=Singleton):
 
         **Parameters**
 
-        - ***login_request*** (`NamePasswordLoginRequest`) —
+        - ***login_request*** (`NamePasswordLoginRequest`) -
           Request object containing the account name and password.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`LoginResponse`) —
+        - ***response*** (`LoginResponse`) -
           Login result including token, expiration, and account details.
         """
         json = login_request.model_dump(mode="json")
@@ -110,12 +119,12 @@ class Login(metaclass=Singleton):
 
         **Parameters**
 
-        - ***login_request*** (`EmailPasswordLoginRequest`) —
+        - ***login_request*** (`EmailPasswordLoginRequest`) -
           Request object containing the email and password.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`LoginResponse`) —
+        - ***response*** (`LoginResponse`) -
           Contains token and authenticated account details.
         """
         json = login_request.model_dump(mode="json")
@@ -132,12 +141,12 @@ class Login(metaclass=Singleton):
 
         **Parameters**
 
-        - ***email*** (`str`) —
+        - ***email*** (`str`) -
           The user’s email address to which the OTP will be sent.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`None`) —
+        - ***response*** (`None`) -
           No response body. A verification code is sent to the email.
         """
         await self._http_client.post("authenticate/login/email/otp", json={"email": email})
@@ -150,15 +159,15 @@ class Login(metaclass=Singleton):
 
         **Parameters**
 
-        - ***email*** (`str`) —
+        - ***email*** (`str`) -
           The email address used during OTP initiation.
 
-        - ***code*** (`str`) —
+        - ***code*** (`str`) -
           The one-time password code received via email.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`LoginResponse`) —
+        - ***response*** (`LoginResponse`) -
           Contains authentication token and account details upon successful verification.
         """
         json = {"email": email, "code": code}

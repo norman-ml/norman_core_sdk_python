@@ -16,6 +16,18 @@ class Signup(metaclass=Singleton):
     The `Signup` class supports multiple registration flows including
     default signups, API key-based creation, email-based signup,
     and password-based signup.
+    
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the Signup service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -32,11 +44,11 @@ class Signup(metaclass=Singleton):
 
         **Parameters**
 
-        - *(none)* — This method does not require input parameters.
+        - *(none)* - This method does not require input parameters.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`LoginResponse`) —
+        - ***response*** (`LoginResponse`) -
           The authenticated session returned after successful signup.
         """
         response = await self._http_client.put("authenticate/signup/default")
@@ -50,17 +62,17 @@ class Signup(metaclass=Singleton):
 
         **Parameters**
 
-        - ***signup_request*** (`SignupKeyRequest`) —
+        - ***signup_request*** (`SignupKeyRequest`) -
           Request object containing account details for key-based signup.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`Account`) —
+        - ***response*** (`Account`) -
           The created account metadata returned upon successful registration.
 
         > ⚠️ **Important:**
         > Store the API key securely.
-        > API keys **cannot be regenerated** — losing it requires creating a new one.
+        > API keys **cannot be regenerated** - losing it requires creating a new one.
         """
         json = signup_request.model_dump(mode="json")
         response = await self._http_client.put("authenticate/signup/key", json=json)
@@ -74,18 +86,18 @@ class Signup(metaclass=Singleton):
 
         **Parameters**
 
-        - ***signup_request*** (`SignupPasswordRequest`) —
+        - ***signup_request*** (`SignupPasswordRequest`) -
           Request object containing credentials for password-based signup.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`Account`) —
+        - ***response*** (`Account`) -
           The created account object returned upon successful signup.
 
           **Fields:**
-          - **id** (`str`) — Unique account identifier.
-          - **creation_time** (`datetime`) — Account creation timestamp.
-          - **name** (`str`) — Registered username.
+          - **id** (`str`) - Unique account identifier.
+          - **creation_time** (`datetime`) - Account creation timestamp.
+          - **name** (`str`) - Registered username.
         """
         json = signup_request.model_dump(mode="json")
         response = await self._http_client.put("authenticate/signup/password", json=json)
@@ -99,17 +111,17 @@ class Signup(metaclass=Singleton):
 
         **Parameters**
 
-        - ***signup_request*** (`SignupEmailRequest`) —
+        - ***signup_request*** (`SignupEmailRequest`) -
           Request object containing the email and optional display name.
 
           **Fields:**
-          - **email** (`str`) — The email address to register.
-          - **name** (`Optional[str]`) — Optional display name associated with the email.
-          - **send_verification** (`Optional[bool]`) — Whether to send a verification email immediately.
+          - **email** (`str`) - The email address to register.
+          - **name** (`Optional[str]`) - Optional display name associated with the email.
+          - **send_verification** (`Optional[bool]`) - Whether to send a verification email immediately.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`Account`) —
+        - ***response*** (`Account`) -
           The created account metadata returned upon signup.
         """
         json = signup_request.model_dump(mode="json")

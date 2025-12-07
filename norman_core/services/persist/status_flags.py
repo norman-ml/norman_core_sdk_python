@@ -17,6 +17,18 @@ class StatusFlags(metaclass=Singleton):
     The `StatusFlags` class allows querying operational flags, health indicators,
     or runtime markers for various Norman entities such as models,
     invocations, or services.
+    
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the StatusFlags service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -37,15 +49,15 @@ class StatusFlags(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***constraints*** (`Optional[QueryConstraints]`) —
+        - ***constraints*** (`Optional[QueryConstraints]`) -
           Optional query object for filtering or pagination.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, list[StatusFlag]]`) —
+        - ***response*** (`dict[str, list[StatusFlag]]`) -
           Dictionary mapping entity IDs to a list of `StatusFlag` objects.
         """
         json = None

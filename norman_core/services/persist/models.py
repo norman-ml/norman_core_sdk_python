@@ -18,6 +18,18 @@ class Models(metaclass=Singleton):
 
     The `Models` class allows retrieving, creating, upgrading, replacing,
     activating, and deleting model entries stored in the Norman system.
+    
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the Models service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -31,16 +43,16 @@ class Models(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***request*** (`Optional[GetModelsRequest]`) —
+        - ***request*** (`Optional[GetModelsRequest]`) -
           Optional request object specifying filters and pagination.
           If not provided, defaults to fetching all completed (`finished_models=True`) models.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, Model]`) —
+        - ***response*** (`dict[str, Model]`) -
           Dictionary mapping model IDs to corresponding `Model` objects.
         """
         json = constraint.model_dump(mode="json")
@@ -56,15 +68,15 @@ class Models(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***models*** (`List[Model]`) —
+        - ***models*** (`List[Model]`) -
           List of `Model` objects to be created.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, Model]`) —
+        - ***response*** (`dict[str, Model]`) -
           Mapping of newly created model IDs to their corresponding model objects.
         """
         json = None
@@ -83,16 +95,16 @@ class Models(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***models*** (`List[Model]`) —
+        - ***models*** (`List[Model]`) -
           List of existing model objects to be upgraded.
           Each upgraded model will receive a new version entry in the database.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, Model]`) —
+        - ***response*** (`dict[str, Model]`) -
           Dictionary mapping new version IDs to upgraded model objects.
         """
         json = None
@@ -114,15 +126,15 @@ class Models(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***models*** (`List[Model]`) —
+        - ***models*** (`List[Model]`) -
           List of model objects that should replace existing entries.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, Model]`) —
+        - ***response*** (`dict[str, Model]`) -
           Dictionary mapping updated model IDs to their new definitions.
         """
         json = None
@@ -144,15 +156,15 @@ class Models(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***model_previews*** (`List[ModelPreview]`) —
+        - ***model_previews*** (`List[ModelPreview]`) -
           List of model previews to be marked as active.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`List[ModelPreview]`) —
+        - ***response*** (`List[ModelPreview]`) -
           List of updated `ModelPreview` objects now marked as active.
         """
         json = None
@@ -171,16 +183,16 @@ class Models(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***constraints*** (`QueryConstraints`) —
+        - ***constraints*** (`QueryConstraints`) -
           Query constraints defining which models to delete.
           Supports filters like model name, ID, or status.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`int`) —
+        - ***response*** (`int`) -
           Number of affected model records.
         """
         json = constraints.model_dump()

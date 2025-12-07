@@ -17,6 +17,18 @@ class Accounts(metaclass=Singleton):
     This class communicates with the `authenticate/accounts` endpoints
     and exposes coroutine methods for creating, retrieving, updating,
     and replacing accounts.
+
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the Accounts service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -34,14 +46,13 @@ class Accounts(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) — Authentication token authorizing the request.
-        - ***constraints*** (`Optional[QueryConstraints]`) — Optional filtering and pagination constraints for narrowing down results.
+        - ***token*** (`Sensitive[str]`) - Authentication token authorizing the request.
+        - ***constraints*** (`Optional[QueryConstraints]`) - Optional filtering and pagination constraints for narrowing down results.
 
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, Account]`) —
-          Dictionary mapping account IDs to their corresponding `Account` objects.
+        - ***response*** (`dict[str, Account]`) - Dictionary mapping account IDs to their corresponding `Account` objects.
         """
         json = None
         if constraints is not None:
@@ -62,13 +73,13 @@ class Accounts(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) — Authentication token authorizing the request.
+        - ***token*** (`Sensitive[str]`) - Authentication token authorizing the request.
 
-        - ***accounts*** (`List[Account]`) — List of `Account` objects to be created.
+        - ***accounts*** (`List[Account]`) - List of `Account` objects to be created.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`List[Account]`) — List of newly created accounts, validated against the `Account` schema.
+        - ***response*** (`List[Account]`) - List of newly created accounts, validated against the `Account` schema.
         """
         json = TypeAdapter(list[Account]).dump_python(accounts, mode="json")
 
@@ -90,14 +101,13 @@ class Accounts(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) — Authentication token authorizing the request.
+        - ***token*** (`Sensitive[str]`) - Authentication token authorizing the request.
 
-        - ***accounts*** (`List[Account]`) — New list of accounts that should replace the existing ones.
+        - ***accounts*** (`List[Account]`) - New list of accounts that should replace the existing ones.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`int`) —
-          The number of entities modified or replaced.
+        - ***response*** (`int`) - The number of entities modified or replaced.
         """
         json = None
         if accounts is not None:
@@ -119,14 +129,14 @@ class Accounts(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) — Authentication token authorizing the request.
-        - ***account*** (`Account.UpdateSchema`) — Partial account update schema defining fields to modify.
+        - ***token*** (`Sensitive[str]`) - Authentication token authorizing the request.
+        - ***account*** (`Account.UpdateSchema`) - Partial account update schema defining fields to modify.
 
-        - ***constraints*** (`Optional[QueryConstraints]`) — Conditions for selecting which accounts to update.
+        - ***constraints*** (`Optional[QueryConstraints]`) - Conditions for selecting which accounts to update.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`int`) — Number of accounts affected by the update operation.
+        - ***response*** (`int`) - Number of accounts affected by the update operation.
         """
         parsed_constraints = None
         if constraints is not None:

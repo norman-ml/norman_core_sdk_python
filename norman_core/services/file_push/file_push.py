@@ -15,6 +15,18 @@ class FilePush(metaclass=Singleton):
 
     The `FilePush` class handles socket allocation for uploading model
     assets and inputs, as well as completion tracking via checksum verification.
+    
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the FilePush service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -32,15 +44,15 @@ class FilePush(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***pairing_request*** (`SocketAssetPairingRequest`) —
+        - ***pairing_request*** (`SocketAssetPairingRequest`) -
           Request object defining asset pairing and upload configuration.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`SocketPairingResponse`) —
+        - ***response*** (`SocketPairingResponse`) -
           Contains information about the allocated socket for uploading.
         """
         json = pairing_request.model_dump(mode="json")
@@ -59,15 +71,15 @@ class FilePush(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***pairing_request*** (`SocketInputPairingRequest`) —
+        - ***pairing_request*** (`SocketInputPairingRequest`) -
           Request object defining the input upload configuration.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`SocketPairingResponse`) —
+        - ***response*** (`SocketPairingResponse`) -
           Contains details about the allocated socket for uploading input data.
         """
         json = pairing_request.model_dump(mode="json")
@@ -88,15 +100,15 @@ class FilePush(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***checksum_request*** (`ChecksumRequest`) —
+        - ***checksum_request*** (`ChecksumRequest`) -
           Request object containing checksum validation details.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`None`) —
+        - ***response*** (`None`) -
           No response body. A successful status confirms the upload has been finalized and validated.
         """
         json = checksum_request.model_dump(mode="json")

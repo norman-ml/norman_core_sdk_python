@@ -17,6 +17,18 @@ class Register(metaclass=Singleton):
     The `Register` class handles registration flows including password creation,
     email registration and verification, API-key generation, and retrieval
     of available authentication factors.
+
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the Register service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -34,15 +46,15 @@ class Register(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***account_id*** (`str`) —
+        - ***account_id*** (`str`) -
           Unique identifier of the account whose authentication factors should be retrieved.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`AccountAuthenticationMethods`) —
+        - ***response*** (`AccountAuthenticationMethods`) -
           Object describing which authentication factors (email, password, key, etc.) are registered for the account.
         """
         response = await self._http_client.get(
@@ -65,20 +77,20 @@ class Register(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***register_key_request*** (`RegisterAuthFactorRequest`) —
+        - ***register_key_request*** (`RegisterAuthFactorRequest`) -
           Request object specifying the account and key-generation parameters.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`str`) —
+        - ***response*** (`str`) -
           Newly generated API key as a sensitive string value.
 
         > ⚠️ **Important:**
         > Store the API key securely.
-        > Keys **cannot be regenerated** — losing it requires creating a new one.
+        > Keys **cannot be regenerated** - losing it requires creating a new one.
         """
         json = register_key_request.model_dump(mode="json")
         api_key = await self._http_client.post("authenticate/generate/key", token, json=json)
@@ -96,15 +108,15 @@ class Register(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***register_password_request*** (`RegisterPasswordRequest`) —
+        - ***register_password_request*** (`RegisterPasswordRequest`) -
           Request object containing the password registration payload.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`None`) —
+        - ***response*** (`None`) -
           No response body. A successful status indicates password registration succeeded.
         """
         json = register_password_request.model_dump(mode="json")
@@ -122,15 +134,15 @@ class Register(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***register_email_request*** (`RegisterEmailRequest`) —
+        - ***register_email_request*** (`RegisterEmailRequest`) -
           Request object containing the email registration details.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`None`) —
+        - ***response*** (`None`) -
           No response body. An email verification code is sent to the provided address.
         """
         json = register_email_request.model_dump(mode="json")
@@ -149,18 +161,18 @@ class Register(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***email*** (`str`) —
+        - ***email*** (`str`) -
           Email address that received the verification code.
 
-        - ***code*** (`str`) —
+        - ***code*** (`str`) -
           The one-time verification code sent to the user’s email.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`None`) —
+        - ***response*** (`None`) -
           No response body. Successful completion verifies the email.
         """
         await self._http_client.post(f"authenticate/register/email/verify/{email}/{code}", token)
@@ -177,15 +189,15 @@ class Register(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***resend_email_verification_code_request*** (`ResendEmailVerificationCodeRequest`) —
+        - ***resend_email_verification_code_request*** (`ResendEmailVerificationCodeRequest`) -
           Request payload containing the target email and account ID.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`None`) —
+        - ***response*** (`None`) -
           No response body. A new OTP is delivered to the provided email.
         """
         json = resend_email_verification_code_request.model_dump(mode="json")

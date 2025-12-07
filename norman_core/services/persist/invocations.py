@@ -17,6 +17,18 @@ class Invocations(metaclass=Singleton):
     The `Invocations` class allows creating new invocation entries, retrieving
     existing ones, fetching invocation history, and generating invocations
     based on model names and execution counts.
+    
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the Invocations service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -34,15 +46,15 @@ class Invocations(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***constraints*** (`Optional[QueryConstraints]`) —
+        - ***constraints*** (`Optional[QueryConstraints]`) -
           Optional query object defining filters and pagination.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, Invocation]`) —
+        - ***response*** (`dict[str, Invocation]`) -
           Dictionary mapping invocation IDs to their corresponding `Invocation` objects.
         """
         json = None
@@ -63,15 +75,15 @@ class Invocations(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***invocations*** (`List[Invocation]`) —
+        - ***invocations*** (`List[Invocation]`) -
           List of `Invocation` objects representing executions to persist.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`List[Invocation]`) —
+        - ***response*** (`List[Invocation]`) -
           List of successfully created invocation objects returned from the server.
         """
         json = TypeAdapter(list[Invocation]).dump_python(invocations, mode="json")
@@ -93,15 +105,15 @@ class Invocations(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***model_name_counter*** (`dict[str, int]`) —
+        - ***model_name_counter*** (`dict[str, int]`) -
           Mapping of model names to the number of invocations to create.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`List[Invocation]`) —
+        - ***response*** (`List[Invocation]`) -
           List of newly created invocation records corresponding to the counts provided.
         """
         response = await self._http_client.post("persist/invocations/by-name", token, json=model_name_counter)
@@ -119,15 +131,15 @@ class Invocations(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***constraints*** (`Optional[QueryConstraints]`) —
+        - ***constraints*** (`Optional[QueryConstraints]`) -
           Optional query object for filtering historical invocations.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, Invocation]`) —
+        - ***response*** (`dict[str, Invocation]`) -
           Dictionary mapping invocation IDs to corresponding historical invocation objects.
         """
         json = None

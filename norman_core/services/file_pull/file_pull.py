@@ -17,6 +17,18 @@ class FilePull(metaclass=Singleton):
     The `FilePull` class handles the submission and retrieval of download
     metadata and upload links for model-related files such as inputs, outputs,
     and assets.
+    
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the FilePull service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -37,16 +49,16 @@ class FilePull(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***entity_id*** (`str`) —
+        - ***entity_id*** (`str`) -
           The unique identifier of the entity (input, output, or asset)
           whose download metadata should be retrieved.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`TrackedDownloadUnion`) —
+        - ***response*** (`TrackedDownloadUnion`) -
           Union type containing metadata for tracked downloads.
           Includes file size, creation time, type, and download URLs.
         """
@@ -65,15 +77,15 @@ class FilePull(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***download_request*** (`AssetDownloadRequest`) —
+        - ***download_request*** (`AssetDownloadRequest`) -
           Request object defining asset upload metadata.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`List[str]`) —
+        - ***response*** (`List[str]`) -
           List of successfully registered asset link URLs.
         """
         json = download_request.model_dump(mode="json")
@@ -92,20 +104,20 @@ class FilePull(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***download_request*** (`InputDownloadRequest`) —
+        - ***download_request*** (`InputDownloadRequest`) -
           Request object defining model input upload details.
 
           **Fields:**
-          - **invocation_id** (`str`) — ID of the invocation the inputs belong to.
-          - **input_links** (`List[str]`) — Paths or URLs of input files.
-          - **metadata** (`Optional[dict]`) — Optional additional input metadata.
+          - **invocation_id** (`str`) - ID of the invocation the inputs belong to.
+          - **input_links** (`List[str]`) - Paths or URLs of input files.
+          - **metadata** (`Optional[dict]`) - Optional additional input metadata.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`List[str]`) —
+        - ***response*** (`List[str]`) -
           List of input upload URLs or references created by the system.
 
         """
@@ -125,15 +137,15 @@ class FilePull(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***download_request*** (`OutputDownloadRequest`) —
+        - ***download_request*** (`OutputDownloadRequest`) -
           Request object containing model output details.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`List[str]`) —
+        - ***response*** (`List[str]`) -
           List of uploaded or registered output link URLs.
         """
         json = download_request.model_dump(mode="json")

@@ -17,6 +17,18 @@ class ModelBases(metaclass=Singleton):
     The `ModelBases` class allows fetching metadata and configuration
     information about foundational models (pretrained, versioned, or
     template models) available in the system.
+    
+    **Constructor**
+
+    ***__init__()***
+
+    Initializes the ModelBases service and creates an internal `HttpClient`
+    instance used to communicate with the Norman authentication backend.
+    Because this class is implemented as a singleton, the same HTTP client
+    instance is reused across the application, improving connection reuse
+    and reducing overhead.
+
+    **Methods**
     """
 
     def __init__(self) -> None:
@@ -33,23 +45,23 @@ class ModelBases(metaclass=Singleton):
 
         **Parameters**
 
-        - ***token*** (`Sensitive[str]`) —
+        - ***token*** (`Sensitive[str]`) -
           Authentication token authorizing the request.
 
-        - ***request*** (`Optional[GetModelsRequest]`) —
+        - ***request*** (`Optional[GetModelsRequest]`) -
           Optional filtering and pagination request specifying which models to retrieve.
 
-        **Response Structure**
+        **Returns**
 
-        - ***response*** (`dict[str, ModelBase]`) —
+        - ***response*** (`dict[str, ModelBase]`) -
           Dictionary mapping model base IDs to corresponding `ModelBase` objects.
 
           **Each `ModelBase` includes:**
-          - **id** (`str`) — Unique identifier of the model base.
-          - **name** (`str`) — Human-readable model base name.
-          - **version** (`str`) — Version label or tag (e.g., `"v1.0"`).
-          - **description** (`Optional[str]`) — Textual description of the model.
-          - **created_at** (`datetime`) — Timestamp when the model was created.
+          - **id** (`str`) - Unique identifier of the model base.
+          - **name** (`str`) - Human-readable model base name.
+          - **version** (`str`) - Version label or tag (e.g., `"v1.0"`).
+          - **description** (`Optional[str]`) - Textual description of the model.
+          - **created_at** (`datetime`) - Timestamp when the model was created.
         """
         json = constraint.model_dump(mode="json")
         response = await self._http_client.post("persist/models/bases/get", token, json=json)
