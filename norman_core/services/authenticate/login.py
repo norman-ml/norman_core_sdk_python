@@ -3,6 +3,7 @@ from norman_objects.services.authenticate.login.api_key_login_request import Api
 from norman_objects.services.authenticate.login.email_password_login_request import EmailPasswordLoginRequest
 from norman_objects.services.authenticate.login.login_response import LoginResponse
 from norman_objects.services.authenticate.login.name_password_login_request import NamePasswordLoginRequest
+
 from norman_utils_external.singleton import Singleton
 from norman_core.clients.http_client import HttpClient
 
