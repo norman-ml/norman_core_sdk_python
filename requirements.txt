@@ -1,4 +1,4 @@
-git+https://github.com/norman-ml/norman_objects.git
+git+https://github.com/norman-ml/norman_objects.git@86c5dkb5w/bug/standarise-error-system
 git+https://github.com/norman-ml/norman_utils_external.git
 
 aiofiles==24.1.0
