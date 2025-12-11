@@ -2,7 +2,7 @@ from norman_objects.services.authenticate.register.register_auth_factor_request 
 from norman_objects.services.authenticate.register.register_email_request import RegisterEmailRequest
 from norman_objects.services.authenticate.register.register_password_request import RegisterPasswordRequest
 from norman_objects.services.authenticate.register.resend_email_verification_code_request import ResendEmailVerificationCodeRequest
-from norman_objects.shared.authentication.account_authentication_methods import AccountAuthenticationMethods
+from norman_objects.shared.authentication.account_authentication_factors import AccountAuthenticationFactors
 from norman_objects.shared.security.sensitive import Sensitive
 
 from norman_utils_external.singleton import Singleton
@@ -13,9 +13,9 @@ class Register(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def get_authentication_factors(self, token: Sensitive[str], account_id: str) -> AccountAuthenticationMethods:
+    async def get_authentication_factors(self, token: Sensitive[str], account_id: str) -> AccountAuthenticationFactors:
         response = await self._http_client.get(f"authenticate/register/get/authentication/factors/{account_id}", token)
-        return AccountAuthenticationMethods.model_validate(response)
+        return AccountAuthenticationFactors.model_validate(response)
 
     async def generate_api_key(self, token: Sensitive[str], register_key_request: RegisterAuthFactorRequest) -> str:
         json = register_key_request.model_dump(mode="json")
