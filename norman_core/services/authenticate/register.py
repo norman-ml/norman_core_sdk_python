@@ -38,7 +38,7 @@ class Register(metaclass=Singleton):
         self,
         token: Sensitive[str],
         account_id: str
-    ) -> AccountAuthenticationMethods:
+    ) -> AccountAuthenticationFactors:
         """
         **Coroutine**
 
@@ -54,15 +54,12 @@ class Register(metaclass=Singleton):
 
         **Returns**
 
-        - ***response*** (`AccountAuthenticationMethods`) -
+        - ***response*** (`AccountAuthenticationFactors`) -
           Object describing which authentication factors (email, password, key, etc.) are registered for the account.
         """
         response = await self._http_client.get(
             f"authenticate/register/get/authentication/factors/{account_id}", token
         )
-        return AccountAuthenticationMethods.model_validate(response)
-    async def get_authentication_factors(self, token: Sensitive[str], account_id: str) -> AccountAuthenticationFactors:
-        response = await self._http_client.get(f"authenticate/register/get/authentication/factors/{account_id}", token)
         return AccountAuthenticationFactors.model_validate(response)
 
     async def generate_api_key(
