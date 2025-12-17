@@ -26,7 +26,7 @@ class Invocations(metaclass=Singleton):
         return TypeAdapter(list[Invocation]).validate_python(response)
 
     async def create_invocations_by_model_names(self, token: Sensitive[str], model_name_counter: dict[str, int]) -> list[Invocation]:
-        response = await self._http_client.post("persist/invocations/by-name", token, json=model_name_counter)
+        response = await self._http_client.post("persist/invocations/by/name", token, json=model_name_counter)
         return TypeAdapter(list[Invocation]).validate_python(response)
 
     async def get_invocation_history(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None) -> dict[str, Invocation]:

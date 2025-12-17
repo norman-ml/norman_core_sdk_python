@@ -1,4 +1,4 @@
-git+https://github.com/norman-ml/norman_objects.git
+git+https://github.com/norman-ml/norman_objects.git@86c6wa00a/data-model/top-level-model-class
 git+https://github.com/norman-ml/norman_utils_external.git
 
 aiofiles==24.1.0
