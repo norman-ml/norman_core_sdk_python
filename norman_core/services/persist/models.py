@@ -34,10 +34,10 @@ class Models(metaclass=Singleton):
         response = await self._http_client.post("persist/models", token, json=json)
         return TypeAdapter(list[Model]).validate_python(response)
 
-    async def create_model_projections(self, token: Sensitive[str], models: list[ModelProjection]) -> dict[str, ModelProjection]:
+    async def create_model_projections(self, token: Sensitive[str], model_projections: list[ModelProjection]) -> dict[str, ModelProjection]:
         json = None
-        if models is not None:
-            json = TypeAdapter(list[ModelProjection]).dump_python(models, mode="json")
+        if model_projections is not None:
+            json = TypeAdapter(list[ModelProjection]).dump_python(model_projections, mode="json")
 
         response = await self._http_client.put("persist/models/projections", token, json=json)
         return TypeAdapter(list[ModelProjection]).validate_python(response)
