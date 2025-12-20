@@ -1,3 +1,7 @@
+[build-system]
+requires = ["flit_core==3.12.0"]
+build-backend = "flit_core.buildapi"
+
 [project]
 name = "norman-core-sdk"
 version = "0.1.0"
@@ -10,17 +14,27 @@ dependencies = [
 
     "aiofiles==24.1.0",
     "httpx==0.28.1",
-    "pytest==8.4.1",
-    "pytest-asyncio==1.1.0",
     "xxhash==3.5.0"
 ]
 
-[build-system]
-requires = ["setuptools==80.9.0", "wheel"]
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+dev = [
+  "pytest==8.4.2"
+]
+
+[tool.flit.module]
+name = "norman_core"
 
 [tool.pytest.ini_options]
+testpaths = ["tests"]
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "upgrade: marks tests as part of model upgrade flow (deselect with '-m \"not upgrade\"')",
+    "authenticate: anything to do with the authentication service",
+    "file_pull: anything to do with the file_pull service",
+    "file_push: anything to do with the file_push service",
+    "persist: anything to do with the persist service",
+    "retrieve: anything to do with the retrieve service",
+
+    "accounts: anything to do with account entities",
+    "models: anything to do with model entities",
+    "invocations: anything to do with invocation entities"
 ]
