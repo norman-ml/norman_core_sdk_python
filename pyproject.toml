@@ -20,7 +20,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "pytest==8.4.2",
-  "pytest-asyncio==1.3.0"
+  "pytest-asyncio==1.2.0"
 ]
 
 [tool.flit.module]
