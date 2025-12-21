@@ -1,6 +1,6 @@
 # Norman Core SDK Overview
 
-Welcome to the **Norman Core SDK** —  
+Welcome to the **Norman Core SDK** -  
 the foundational layer that powers all Norman services.
 
 The Core SDK provides **low-level, high-performance utilities** used internally
@@ -177,7 +177,7 @@ Use the **Norman Core SDK** if you are:
 - Integrating with Norman microservices directly (bypassing high-level SDK).
 
 If you are building an application that consumes models,  
-use the **Norman SDK** instead — it builds on top of the Core SDK for simplicity.
+use the **Norman SDK** instead - it builds on top of the Core SDK for simplicity.
 
 ---
 
@@ -209,4 +209,4 @@ It handles:
 - Encrypted socket transfers  
 - Data persistence and retrieval  
 
-It is the **engine** beneath the Norman SDK — designed for reliability, scalability, and speed.
+It is the **engine** beneath the Norman SDK - designed for reliability, scalability, and speed.
