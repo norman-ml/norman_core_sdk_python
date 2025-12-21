@@ -1,5 +1,5 @@
 class _HttpConfig:
-    base_url = "https://api.dev.amit.public.norman-ai.com/v0"
+    base_url = "https://api.<environment-name>.<sandbox-name>.public.norman-ai.com/v0"
     timeout_seconds = 10
 
 class _IOConfig:
