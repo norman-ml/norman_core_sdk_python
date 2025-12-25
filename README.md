@@ -1,12 +1,12 @@
 # Norman Core SDK Overview
 
-The Norman Core SDK is a low-level foundational library that powers all Norman services and underlies the higher-level Norman SDK.
+The Norman Core SDK is the low-level foundational library that powers Norman inter-service communication and underlies the higher-level Norman SDK.
 
-For most use cases, we strongly recommend using the high-level Norman SDK, which provides a simpler, more ergonomic interface for interacting with Norman services and abstracts away internal implementation details.
+For most use cases, we recommend using the high-level Norman SDK, which provides a simple interface with Norman and abstracts the underlying implementation details.
 
-The Core SDK is intended only for users who require fine-grained control over how operations are executed. It exposes low-level utilities used internally by the Norman platform, including HTTP communication, file streaming, socket-level encryption, and direct access to stored model data.
+The Core SDK is recommended for users who require fine-grained control over operation execution. It provides low-level utilities for http and socket communication, as well as fully mapped direct access to every route exposed by the Norman backend.
 
-The following example demonstrates a typical Core SDK workflow: manually authenticating to exchange an API key for an access token, applying specific query constraints, and extracting version metadata directly from the persistence layer.
+The following example demonstrates a typical workflow which requires use of the Core SDK: manually authenticating to exchange an API key for an access token, applying specific query constraints, and extracting version metadata directly from the persistence layer.
 
 ```python
 from norman_core.clients.http_client import HttpClient
@@ -22,11 +22,11 @@ MODEL_ID = "<your_model_id>"
 
 async def main():
     # Initialize Core Services
-    client = HttpClient()
+    http_client = HttpClient()
     login_service = Login()
     model_service = Models()
 
-    async with client:
+    async with http_client:
         # Authenticate to generate an access token
         login_request = ApiKeyLoginRequest(api_key=API_KEY)
         login_response = await login_service.login_with_key(login_request)
@@ -43,10 +43,8 @@ async def main():
             raise ValueError(f"Model with ID {MODEL_ID} not found.")
 
         # Map version labels to their current build status
-        model_versions_build_status = {version.label: version.build_status for version in model_preview.versions} 
+        model_versions_build_status = {version.label: version.build_status for version in model_preview.versions}
         print(model_versions_build_status)
 ```
 
-Comprehensive documentation is available on our website:
-https://sdk.norman-ai.com/api/core
-
+For the full reference and detailed instructions, please visit our Core SDK documentation at https://sdk.norman-ai.com/api/core.
