@@ -54,7 +54,7 @@ async def signup_to_norman() -> Tuple[Account, Sensitive[str]]:
 
     # Retrieve your account and API key from the signup response
     account: Account = signup_response.account
-    api_key: Sensitive[str] = Sensitive[str](signup_response.api_key)
+    api_key: Sensitive[str] = Sensitive(signup_response.api_key)
 
     # Return the account and API key to the caller
     return account, api_key
@@ -93,7 +93,7 @@ async def get_access_token() -> Sensitive[str]:
     login_service: Login = Login()
 
     # Set your api key and create a login request
-    api_key: Sensitive[str] = Sensitive[str]("<your_api_key>")
+    api_key: Sensitive[str] = Sensitive("<your_api_key>")
     login_request: ApiKeyLoginRequest = ApiKeyLoginRequest(api_key=api_key)
 
     # Login to Norman with your login request
@@ -143,7 +143,7 @@ async def get_model_build_status() -> List[ModelVersionPreview]:
     model_service: Models = Models()
 
     # Set your access token and model id
-    access_token: Sensitive[str] = Sensitive[str]("<your_access_token>")
+    access_token: Sensitive[str] = Sensitive("<your_access_token>")
     model_id: str = "<your_model_id>"
 
     # Define constraints to fetch the configuration preview for the model you specified
