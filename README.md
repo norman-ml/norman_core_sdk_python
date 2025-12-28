@@ -4,14 +4,15 @@ The Norman Core SDK is the low-level foundational library that powers Norman int
 
 For most use cases, we recommend using the high-level Norman SDK, which provides a simple interface with Norman and abstracts the underlying implementation details.
 
-The Core SDK is recommended for users who require fine-grained control over operation execution. It provides low-level utilities for http and socket communication, as well as fully mapped direct access to every route exposed by the Norman backend.
+The Core SDK is recommended for users who require fine-grained control over operation execution. It provides low-level utilities for HTTP and socket communication, as well as fully mapped direct access to every route exposed by the Norman backend.
 
 The following example demonstrates a typical workflow which requires use of the Core SDK: manually authenticating to exchange an API key for an access token, applying specific query constraints, and extracting version metadata directly from the persistence layer.
 
 
 ## 1. Install the Norman Core SDK
 
-To use the Norman Core SDK in Python, we need to install it using the **pip** package manager:
+To use the Norman Core API in Python, install the official Norman SDK using pip:
+
 ```bash
 pip install norman-core
 ````
@@ -72,7 +73,7 @@ Keep them stored safely to prevent them from being misused or compromised.
 Now that we have an API key, we can use it to login to Norman and obtain an access token.
 
 Access tokens are temporary scoped authorization claims that are used to perform actions in the Norman API.
-In this example we initialize the Login class and provide it with the API key we generated.|
+In this example we initialize the Login class and provide it with the API key we generated.
 
 The login class then authenticates with the Norman backend, 
 and provides an access token if the authentication was successful.
@@ -93,7 +94,7 @@ async def get_access_token() -> Sensitive[str]:
     http_client: HttpClient = HttpClient()
     login_service: Login = Login()
 
-    # Set your api key and create a login request
+    # Set your API key and create a login request
     api_key: Sensitive[str] = Sensitive("<your_api_key>")
     login_request: ApiKeyLoginRequest = ApiKeyLoginRequest(api_key=api_key)
 
@@ -118,7 +119,7 @@ asyncio.run(access_token_coroutine)
 The high-level Norman SDK is sufficient for most general use cases. It lets you run models, deploy models and manage your account, credentials, security and API keys. 
 
 However, there are use cases in which you would need or prefer more granular control over your models.
-In this sample code, we will programatically retrieve the configuration preview for a specific model, 
+In this sample code, we programmatically retrieve the configuration preview for a specific model, 
 assumed to be previously created by our account, 
 and check which versions of that model are active and deployed. 
 
@@ -150,7 +151,7 @@ async def get_model_build_status() -> List[ModelVersionPreview]:
     # Define constraints to fetch the configuration preview for the model you specified
     constraints: QueryConstraints = QueryConstraints.equals("Models", "ID", model_id)
 
-    # Retrieve all configuration previews matching the constraints fron the Norman backend
+    # Retrieve all configuration previews matching the constraints from the Norman servers
     async with http_client:
         model_previews: dict[str, ModelPreview] = await model_service.get_model_previews(access_token, constraints)
 
