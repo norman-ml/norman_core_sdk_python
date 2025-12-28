@@ -56,10 +56,11 @@ async def signup_to_norman() -> Tuple[Account, Sensitive[str]]:
     account: Account = signup_response.account
     api_key: Sensitive[str] = Sensitive[str](signup_response.api_key)
 
+    # Return the account and API key to the caller
     return account, api_key
 
-signup_method = signup_to_norman()
-asyncio.run(signup_method)
+signup_coroutine = signup_to_norman()
+asyncio.run(signup_coroutine)
 ```
 
 
@@ -105,8 +106,8 @@ async def get_access_token() -> Sensitive[str]:
     # Return the access token to the caller
     return access_token
 
-access_token_method = get_access_token()
-asyncio.run(access_token_method)
+access_token_coroutine = get_access_token()
+asyncio.run(access_token_coroutine)
 ```
 
 
@@ -167,13 +168,13 @@ async def get_model_build_status() -> List[ModelVersionPreview]:
     return active_model_versions
 
 
-model_build_status_method = get_model_build_status()
-asyncio.run(model_build_status_method)
+model_build_status_coroutine = get_model_build_status()
+asyncio.run(model_build_status_coroutine)
 ```
 
 ## 5. Next steps
 
-This guide covered a single representative workflow using the Norman Core SDK.
-The Core SDK exposes many additional services and operations beyond what is shown here.
+This guide covers a single representative workflow using the Norman Core SDK.
+The Core SDK exposes many additional services and operations beyond the example shown here.
 
 For the full reference and detailed instructions, please visit our documentation at https://sdk.norman-ai.com/api/core.
