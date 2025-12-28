@@ -13,6 +13,7 @@ class Hug(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def download_huggingface_model(self, token: Sensitive[str], huggingface_download_request: HuggingFaceDownloadRequest)  -> list[str]:
-        json = huggingface_download_request.model_dump(mode="json")
-        await self._http_client.post("hug/download", token, json=json)
+    async def download_huggingface_model(self, token: Sensitive[str], download_request: HuggingFaceDownloadRequest)  -> list[str]:
+        json = download_request.model_dump(mode="json")
+        response = await self._http_client.post("hug/download", token, json=json)
+        return TypeAdapter(list[str]).validate_python(response)
