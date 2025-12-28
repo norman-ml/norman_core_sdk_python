@@ -62,7 +62,8 @@ async def signup_to_norman() -> Tuple[Account, Sensitive[str]]:
 signup_coroutine = signup_to_norman()
 asyncio.run(signup_coroutine)
 ```
-
+> ⚠️ **Important:**  
+> Store your API key securely. API keys **cannot be regenerated** - if you lose your key, you will lose access to all your data across Norman clients.
 
 ## 3. Login using the API key to obtain an access token
 
