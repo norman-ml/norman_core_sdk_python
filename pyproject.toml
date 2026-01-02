@@ -9,8 +9,8 @@ description = "Norman SDK"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "norman_objects @ git+https://github.com/norman-ml/norman_objects.git@86c246m16/feature/deploy-ec2-hosted-models",
-    "norman_utils_external @ git+https://github.com/norman-ml/norman_utils_external.git@development",
+    "norman_objects @ git+https://github.com/norman-ml/norman_objects.git@86c72xnkv/feature/model-runtime",
+    "norman_utils_external @ git+https://github.com/norman-ml/norman_utils_external.git@86c72xnkv/feature/model-runtime",
 
     "aiofiles==24.1.0",
     "httpx==0.28.1",
