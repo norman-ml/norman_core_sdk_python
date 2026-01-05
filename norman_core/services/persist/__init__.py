@@ -12,5 +12,6 @@ class Persist(metaclass=Singleton):
         self.models = Models()
         self.notifications = Notifications()
         self.status_flags = StatusFlags()
+        self.tags = Tags()
 
 __all__ = ["Persist"]
