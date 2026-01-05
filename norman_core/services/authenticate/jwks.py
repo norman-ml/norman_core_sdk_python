@@ -8,6 +8,6 @@ class JWKS(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def get_jwks(self) -> JWKS:
+    async def get_key_set(self) -> JWKS:
         response = await self._http_client.get("authenticate/jwks/get")
         return JWKS.model_validate(response)
