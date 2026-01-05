@@ -1,16 +1,15 @@
-from typing import Optional
-
+from norman_objects.shared.models.aggregate_tag import AggregateTag
 from norman_objects.shared.models.model import Model
 from norman_objects.shared.models.model import Model
 from norman_objects.shared.models.model_preview import ModelPreview
 from norman_objects.shared.models.model_projection import ModelProjection
 from norman_objects.shared.models.model_tag import ModelTag
-from norman_objects.shared.models.aggregate_tag import AggregateTag
 from norman_objects.shared.models.model_version_preview import ModelVersionPreview
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
 from norman_utils_external.singleton import Singleton
 from pydantic import TypeAdapter
+from typing import Optional
 
 from norman_core.clients.http_client import HttpClient
 
@@ -33,7 +32,7 @@ class Tags(metaclass=Singleton):
         return TypeAdapter(list[ModelTag]).validate_python(response)
 
     async def delete_tag(self, token: Sensitive[str], constraints: QueryConstraints) -> int:
-        json = constraints.model_dump()
+        json = constraints.model_dump(mode="json")
 
         affected_entities_count: int = await self._http_client.delete("persist/tags/", token, json=json)
         return affected_entities_count
