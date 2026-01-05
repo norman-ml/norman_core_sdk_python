@@ -8,6 +8,6 @@ class JWKS(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def get_jwks(self) -> list[JWK]:
+    async def get_jwks_document(self) -> list[JWK]:
         response = await self._http_client.get("authenticate/jwks/get")
         return [JWK.model_validate(key) for key in response["keys"]]
