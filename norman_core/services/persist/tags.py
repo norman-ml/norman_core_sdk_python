@@ -18,20 +18,23 @@ class Tags(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def get_user_tags_per_model(self, token: Sensitive[str], constraint: Optional[QueryConstraints] = None) -> dict[str, ModelTag]:
-        json = constraint.model_dump(mode="json")
+    async def get_tags(self, token: Sensitive[str], constraint: Optional[QueryConstraints] = None) -> dict[str, ModelTag]:
+        json = None
+        if constraints is not None:
+            json = constraint.model_dump(mode="json")
+
         response = await self._http_client.post("persist/tags/user/get", token, json=json)
         return TypeAdapter(dict[str, ModelTag]).validate_python(response)
 
-    async def add_tag(self, token: Sensitive[str], tags: list[ModelTag]) -> list[ModelTag]:
+    async def create_tags(self, token: Sensitive[str], tags: list[ModelTag]) -> list[ModelTag]:
         json = None
-        if tags is not None and len(tags) > 0:
+        if tags is not None:
             json = TypeAdapter(list[ModelTag]).dump_python(tags, mode="json")
 
         response = await self._http_client.post("persist/tags", token, json=json)
         return TypeAdapter(list[ModelTag]).validate_python(response)
 
-    async def delete_tag(self, token: Sensitive[str], constraints: QueryConstraints) -> int:
+    async def delete_tags(self, token: Sensitive[str], constraints: QueryConstraints) -> int:
         json = constraints.model_dump(mode="json")
 
         affected_entities_count: int = await self._http_client.delete("persist/tags/", token, json=json)
