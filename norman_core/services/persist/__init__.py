@@ -4,6 +4,7 @@ from norman_core.services.persist.invocations import Invocations
 from norman_core.services.persist.models import Models
 from norman_core.services.persist.notifications import Notifications
 from norman_core.services.persist.status_flags import StatusFlags
+from norman_core.services.persist.tags import Tags
 
 
 class Persist(metaclass=Singleton):
@@ -12,5 +13,6 @@ class Persist(metaclass=Singleton):
         self.models = Models()
         self.notifications = Notifications()
         self.status_flags = StatusFlags()
+        self.tags = Tags()
 
 __all__ = ["Persist"]
