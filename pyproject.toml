@@ -9,8 +9,8 @@ description = "Norman SDK"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "norman_objects @ git+https://github.com/norman-ml/norman_objects.git",
-    "norman_utils_external @ git+https://github.com/norman-ml/norman_utils_external.git",
+    "norman_objects @ git+https://github.com/norman-ml/norman_objects.git@86c72xpb1/provisioning/capacity-request-and-release-service",
+    "norman_utils_external @ git+https://github.com/norman-ml/norman_utils_external.git@86c72xpb1/provisioning/capacity-request-and-release-service",
 
     "aiofiles==24.1.0",
     "httpx==0.28.1",
