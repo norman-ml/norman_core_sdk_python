@@ -1,6 +1,7 @@
 from norman_utils_external.singleton import Singleton
 
 from norman_core.services.authenticate.accounts import Accounts
+from norman_core.services.authenticate.capacity import Capacity
 from norman_core.services.authenticate.factors import Factors
 from norman_core.services.authenticate.jwks import JWKS
 from norman_core.services.authenticate.login import Login
@@ -12,6 +13,7 @@ from norman_core.services.authenticate.signup import Signup
 class Authenticate(metaclass=Singleton):
     def __init__(self) -> None:
         self.accounts = Accounts()
+        self.capacity = Capacity()
         self.factors = Factors()
         self.jwks = JWKS()
         self.login = Login()
