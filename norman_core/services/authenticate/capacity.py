@@ -1,6 +1,6 @@
 from typing import Optional
 
-from norman_objects.shared.capacity.account_capacity import Account_Capacity
+from norman_objects.shared.capacity.account_capacity import AccountCapacity
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
 from norman_utils_external.singleton import Singleton
@@ -13,10 +13,10 @@ class Capacity(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def get_account_capacity(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None) -> dict[str, Account_Capacity]:
+    async def get_account_capacity(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None) -> dict[str, AccountCapacity]:
         json = None
         if constraints is not None:
             json = constraints.model_dump(mode="json")
 
         response = await self._http_client.post("/capacity/account/get", token, json=json)
-        return TypeAdapter(dict[str, Account_Capacity]).validate_python(response)
+        return TypeAdapter(dict[str, AccountCapacity]).validate_python(response)
