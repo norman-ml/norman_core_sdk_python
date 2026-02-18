@@ -32,9 +32,3 @@ class ProvisionedInstances(metaclass=Singleton):
 
         response = await self._http_client.put("persist/instances/provisioned", token, json=json)
         return TypeAdapter(list[ProvisionedInstance]).validate_python(response)
-
-    async def delete_provisioned_instances(self, token: Sensitive[str], constraints: QueryConstraints) -> int:
-        json = constraints.model_dump(mode="json")
-
-        affected_entities_count: int = await self._http_client.delete("persist/instances/provisioned", token, json=json)
-        return affected_entities_count
