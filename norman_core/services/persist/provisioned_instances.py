@@ -18,23 +18,23 @@ class ProvisionedInstances(metaclass=Singleton):
         if constraints is not None:
             json = constraints.model_dump(mode="json")
 
-        response = await self._http_client.post("persist/provisioned-instances/get", token, json=json)
+        response = await self._http_client.post("persist/instances/provisioned/get", token, json=json)
         return TypeAdapter(list[ProvisionedInstance]).validate_python(response)
 
     async def create_provisioned_instances(self, token: Sensitive[str], instances: list[ProvisionedInstance]) -> list[ProvisionedInstance]:
         json = TypeAdapter(list[ProvisionedInstance]).dump_python(instances, mode="json")
 
-        response = await self._http_client.post("persist/provisioned-instances", token, json=json)
+        response = await self._http_client.post("persist/instances/provisioned", token, json=json)
         return TypeAdapter(list[ProvisionedInstance]).validate_python(response)
 
-    async def update_provisioned_instances(self, token: Sensitive[str], instances: list[ProvisionedInstance]) -> list[ProvisionedInstance]:
+    async def replace_provisioned_instances(self, token: Sensitive[str], instances: list[ProvisionedInstance]) -> list[ProvisionedInstance]:
         json = TypeAdapter(list[ProvisionedInstance]).dump_python(instances, mode="json")
 
-        response = await self._http_client.put("persist/provisioned-instances", token, json=json)
+        response = await self._http_client.put("persist/instances/provisioned", token, json=json)
         return TypeAdapter(list[ProvisionedInstance]).validate_python(response)
 
     async def delete_provisioned_instances(self, token: Sensitive[str], constraints: QueryConstraints) -> int:
         json = constraints.model_dump(mode="json")
 
-        affected_entities_count: int = await self._http_client.delete("persist/provisioned-instances", token, json=json)
+        affected_entities_count: int = await self._http_client.delete("persist/instances/provisioned", token, json=json)
         return affected_entities_count
