@@ -48,7 +48,7 @@ class Models(metaclass=Singleton):
             json = TypeAdapter(list[ModelProjection]).dump_python(model_projections, mode="json")
 
         response = await self._http_client.post("persist/models/projections", token, json=json)
-        return TypeAdapter(list[Model]).validate_python(response)
+        return TypeAdapter(list[ModelProjection]).validate_python(response)
 
     async def set_active_model_versions(self, token: Sensitive[str], model_version_previews: list[ModelVersionPreview]) -> list[ModelVersionPreview]:
         json = None
