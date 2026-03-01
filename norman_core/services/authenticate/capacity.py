@@ -18,5 +18,5 @@ class Capacity(metaclass=Singleton):
         if constraints is not None:
             json = constraints.model_dump(mode="json")
 
-        response = await self._http_client.post("/capacity/account/get", token, json=json)
+        response = await self._http_client.post("authenticate/capacity/account/get", token, json=json)
         return TypeAdapter(dict[str, AccountCapacity]).validate_python(response)
