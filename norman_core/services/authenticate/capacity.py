@@ -13,10 +13,10 @@ class Capacity(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def get_account_capacity(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None) -> dict[str, AccountCapacity]:
+    async def get_account_capacity(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None) -> list[AccountCapacity]:
         json = None
         if constraints is not None:
             json = constraints.model_dump(mode="json")
 
         response = await self._http_client.post("authenticate/capacity/account/get", token, json=json)
-        return TypeAdapter(dict[str, AccountCapacity]).validate_python(response)
+        return TypeAdapter(list[AccountCapacity]).validate_python(response)
