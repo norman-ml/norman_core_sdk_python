@@ -1,6 +1,11 @@
 from typing import Union, AsyncIterator
 from pathlib import Path
 
+import os
+# gRPC C-core reads ALPN setting at library load time, so this must be set
+# before importing grpc. NLB TLS listeners don't advertise ALPN h2.
+os.environ["GRPC_ENFORCE_ALPN_ENABLED"] = "false"
+
 import grpc
 from xxhash import xxh3_64
 
@@ -19,12 +24,6 @@ class GrpcClient:
     async def open(self) -> None:
         if self._channel is not None:
             return
-        import os
-        # gRPC C-core requires ALPN h2 during TLS handshake by default.
-        # NLB TLS listeners may not advertise ALPN. Setting this env var
-        # disables the ALPN check. Same effect as Rust's .assume_http2(true).
-        os.environ["GRPC_ENFORCE_ALPN_ENABLED"] = "false"
-
         self._channel = grpc.aio.secure_channel(
             self._server_address,
             grpc.ssl_channel_credentials()
