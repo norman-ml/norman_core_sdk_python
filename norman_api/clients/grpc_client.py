@@ -1,11 +1,6 @@
 from typing import Union, AsyncIterator
 from pathlib import Path
 
-import os
-# gRPC C-core reads ALPN setting at library load time, so this must be set
-# before importing grpc. NLB TLS listeners don't advertise ALPN h2.
-os.environ["GRPC_ENFORCE_ALPN_ENABLED"] = "false"
-
 import grpc
 from xxhash import xxh3_64
 
