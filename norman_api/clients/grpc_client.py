@@ -19,6 +19,12 @@ class GrpcClient:
     async def open(self) -> None:
         if self._channel is not None:
             return
+        import os
+        # gRPC C-core requires ALPN h2 during TLS handshake by default.
+        # NLB TLS listeners may not advertise ALPN. Setting this env var
+        # disables the ALPN check. Same effect as Rust's .assume_http2(true).
+        os.environ["GRPC_ENFORCE_ALPN_ENABLED"] = "false"
+
         self._channel = grpc.aio.secure_channel(
             self._server_address,
             grpc.ssl_channel_credentials()
