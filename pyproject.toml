@@ -21,7 +21,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest==8.4.2",
-    "pytest-asyncio==1.3.0"
+    "pytest-asyncio==1.2.0"
 ]
 
 [tool.flit.module]
@@ -46,7 +46,7 @@ markers = [
 
 [tool.uv]
 override-dependencies = [
-    "norman-exceptions @ git+https://github.com/norman-ml/norman_exceptions.git@main",
-    "norman-objects @ git+https://github.com/norman-ml/norman_objects.git@main",
-    "norman-utils-external @ git+https://github.com/norman-ml/norman_utils_external.git@main",
+    "norman-exceptions @ git+https://github.com/norman-ml/norman_exceptions.git@86c778p0x/tech-debt/library-restructuring",
+    "norman-objects @ git+https://github.com/norman-ml/norman_objects.git@86c778p0x/tech-debt/library-restructuring",
+    "norman-utils-external @ git+https://github.com/norman-ml/norman_utils_external.git@86c778p0x/tech-debt/library-restructuring",
 ]
