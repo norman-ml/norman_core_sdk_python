@@ -1,27 +1,43 @@
-from norman_objects.services.file_push.checksum.checksum_request import ChecksumRequest
-from norman_objects.services.file_push.pairing.socket_asset_pairing_request import SocketAssetPairingRequest
-from norman_objects.services.file_push.pairing.socket_input_pairing_request import SocketInputPairingRequest
-from norman_objects.services.file_push.pairing.socket_pairing_response import SocketPairingResponse
-from norman_objects.shared.security.sensitive import Sensitive
-from norman_utils.singleton import Singleton
+from typing import Union
+from pathlib import Path
 
-from norman_api.clients.http_client import HttpClient
+from norman_objects.shared.security.sensitive import Sensitive
+
+from norman_utils_external.singleton import Singleton
+from norman_core.clients.grpc_client import GrpcClient
 
 
 class FilePush(metaclass=Singleton):
     def __init__(self) -> None:
-        self._http_client = HttpClient()
+        self._grpc_client = GrpcClient()
 
-    async def allocate_socket_for_asset(self, token: Sensitive[str], pairing_request: SocketAssetPairingRequest) -> SocketPairingResponse:
-        json = pairing_request.model_dump(mode="json")
-        response = await self._http_client.post("file-push/socket/pair/asset", token, json=json)
-        return SocketPairingResponse.model_validate(response)
+    async def upload_asset(self, token: Sensitive[str], account_id: str, model_id: str, version_id: str, asset_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None, file_size: int = None) -> None:
+        await self._grpc_client.open()
+        response = await self._grpc_client.upload_asset(
+            token=token.value(),
+            account_id=account_id,
+            model_id=model_id,
+            version_id=version_id,
+            asset_id=asset_id,
+            file_path=file_path,
+            file_buffer=file_buffer,
+            file_size=file_size
+        )
+        if not response.success:
+            raise RuntimeError(f"Asset upload failed: {response.message}")
 
-    async def allocate_socket_for_input(self, token: Sensitive[str], pairing_request: SocketInputPairingRequest) -> SocketPairingResponse:
-        json = pairing_request.model_dump(mode="json")
-        response = await self._http_client.post("file-push/socket/pair/input", token, json=json)
-        return SocketPairingResponse.model_validate(response)
-
-    async def complete_file_transfer(self, token: Sensitive[str], checksum_request: ChecksumRequest) -> None:
-        json = checksum_request.model_dump(mode="json")
-        await self._http_client.post("file-push/socket/complete", token, json=json)
+    async def upload_input(self, token: Sensitive[str], account_id: str, model_id: str, version_id: str, invocation_id: str, input_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None, file_size: int = None) -> None:
+        await self._grpc_client.open()
+        response = await self._grpc_client.upload_input(
+            token=token.value(),
+            account_id=account_id,
+            model_id=model_id,
+            version_id=version_id,
+            invocation_id=invocation_id,
+            input_id=input_id,
+            file_path=file_path,
+            file_buffer=file_buffer,
+            file_size=file_size
+        )
+        if not response.success:
+            raise RuntimeError(f"Input upload failed: {response.message}")
