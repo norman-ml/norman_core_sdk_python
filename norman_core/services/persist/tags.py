@@ -1,15 +1,10 @@
-from norman_objects.shared.models.aggregate_tag import AggregateTag
-from norman_objects.shared.models.model import Model
-from norman_objects.shared.models.model import Model
-from norman_objects.shared.models.model_preview import ModelPreview
-from norman_objects.shared.models.model_projection import ModelProjection
-from norman_objects.shared.models.model_tag import ModelTag
-from norman_objects.shared.models.model_version_preview import ModelVersionPreview
+from typing import Optional
+
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
+from norman_objects.shared.tags.model_tag import ModelTag
 from norman_utils_external.singleton import Singleton
 from pydantic import TypeAdapter
-from typing import Optional
 
 from norman_core.clients.http_client import HttpClient
 
@@ -18,10 +13,10 @@ class Tags(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def get_tags(self, token: Sensitive[str], constraint: Optional[QueryConstraints] = None) -> dict[str, ModelTag]:
+    async def get_tags(self, token: Sensitive[str], constraints: Optional[QueryConstraints] = None) -> dict[str, ModelTag]:
         json = None
         if constraints is not None:
-            json = constraint.model_dump(mode="json")
+            json = constraints.model_dump(mode="json")
 
         response = await self._http_client.post("persist/tags/user/get", token, json=json)
         return TypeAdapter(dict[str, ModelTag]).validate_python(response)

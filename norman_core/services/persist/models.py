@@ -3,9 +3,9 @@ from typing import Optional
 from norman_objects.shared.models.model import Model
 from norman_objects.shared.models.model_preview import ModelPreview
 from norman_objects.shared.models.model_projection import ModelProjection
-from norman_objects.shared.models.model_version_preview import ModelVersionPreview
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
+from norman_objects.shared.versions.model_version_preview import ModelVersionPreview
 from norman_utils_external.singleton import Singleton
 from pydantic import TypeAdapter
 
