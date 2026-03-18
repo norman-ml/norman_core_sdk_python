@@ -1,11 +1,12 @@
 from typing import Optional
 
-from norman_core.clients.http_client import HttpClient
 from norman_objects.shared.provisioning.provisioned_instance import ProvisionedInstance
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
 from norman_utils.singleton import Singleton
 from pydantic import TypeAdapter
+
+from norman_api.clients.http_client import HttpClient
 
 
 class ProvisionedInstances(metaclass=Singleton):

@@ -1,6 +1,7 @@
-from norman_core.clients.http_client import HttpClient
 from norman_objects.shared.authorization.jwks import Jwks
 from norman_utils.singleton import Singleton
+
+from norman_api.clients.http_client import HttpClient
 
 
 class JWKS(metaclass=Singleton):

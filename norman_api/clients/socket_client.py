@@ -4,10 +4,11 @@ import contextlib
 from typing import AsyncGenerator, Any
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
-from norman_core._app_config import AppConfig
 from norman_objects.services.file_push.pairing.socket_pairing_response import SocketPairingResponse
 from norman_utils.streaming_utils import StreamingUtils, AsyncBufferedReader
 from xxhash import xxh3_64
+
+from norman_api._app_config import AppConfig
 
 
 class SocketClient:

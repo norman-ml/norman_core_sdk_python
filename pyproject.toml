@@ -3,7 +3,7 @@ requires = ["flit_core==3.12.0"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "norman-core-sdk"
+name = "norman-api"
 version = "0.1.0"
 description = "Norman SDK"
 readme = "README.md"
@@ -25,7 +25,7 @@ dev = [
 ]
 
 [tool.flit.module]
-name = "norman_core"
+name = "norman_api"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

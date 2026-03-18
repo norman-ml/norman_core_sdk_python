@@ -36,8 +36,8 @@ from norman_objects.services.authenticate.signup.signup_key_response import Sign
 from norman_objects.shared.accounts.account import Account
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.clients.http_client import HttpClient
-from norman_core.services.authenticate import Signup
+from norman_api.clients.http_client import HttpClient
+from norman_api.services.authenticate import Signup
 
 
 async def signup_to_norman() -> Tuple[Account, Sensitive[str]]:
@@ -59,6 +59,7 @@ async def signup_to_norman() -> Tuple[Account, Sensitive[str]]:
 
     # Return the account and API key to the caller
     return account, api_key
+
 
 signup_coroutine = signup_to_norman()
 asyncio.run(signup_coroutine)
@@ -85,8 +86,8 @@ from norman_objects.services.authenticate.login.api_key_login_request import Api
 from norman_objects.services.authenticate.login.login_response import LoginResponse
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.clients.http_client import HttpClient
-from norman_core.services.authenticate import Login
+from norman_api.clients.http_client import HttpClient
+from norman_api.services.authenticate import Login
 
 
 async def get_access_token() -> Sensitive[str]:
@@ -107,6 +108,7 @@ async def get_access_token() -> Sensitive[str]:
 
     # Return the access token to the caller
     return access_token
+
 
 access_token_coroutine = get_access_token()
 asyncio.run(access_token_coroutine)
@@ -135,8 +137,8 @@ from norman_objects.shared.models.model_version_preview import ModelVersionPrevi
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.clients.http_client import HttpClient
-from norman_core.services.persist import Models
+from norman_api.clients.http_client import HttpClient
+from norman_api.services.persist import Models
 
 
 async def get_model_build_status() -> List[ModelVersionPreview]:
@@ -163,7 +165,7 @@ async def get_model_build_status() -> List[ModelVersionPreview]:
         version
         for version in model_preview.versions
         if version.build_status == ModelBuildStatus.Completed
-        and version.active
+           and version.active
     ]
 
     # Return the model versions to the caller
