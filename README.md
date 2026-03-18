@@ -133,9 +133,9 @@ from typing import List
 
 from norman_objects.shared.models.model_build_status import ModelBuildStatus
 from norman_objects.shared.models.model_preview import ModelPreview
-from norman_objects.shared.models.model_version_preview import ModelVersionPreview
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
+from norman_objects.shared.versions.model_version_preview import ModelVersionPreview
 
 from norman_api.clients.http_client import HttpClient
 from norman_api.services.persist import Models
