@@ -5,7 +5,7 @@ from norman_objects.services.file_pull.requests.output_download_request import O
 from norman_objects.shared.security.sensitive import Sensitive
 from pydantic import TypeAdapter
 
-from norman_utils_external.singleton import Singleton
+from norman_utils.singleton import Singleton
 from norman_core.clients.http_client import HttpClient
 
 

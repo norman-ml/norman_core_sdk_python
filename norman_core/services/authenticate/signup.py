@@ -4,7 +4,7 @@ from norman_objects.services.authenticate.signup.signup_key_request import Signu
 from norman_objects.services.authenticate.signup.signup_key_response import SignupKeyResponse
 from norman_objects.services.authenticate.signup.signup_password_request import SignupPasswordRequest
 from norman_objects.shared.accounts.account import Account
-from norman_utils_external.singleton import Singleton
+from norman_utils.singleton import Singleton
 
 from norman_core.clients.http_client import HttpClient
 

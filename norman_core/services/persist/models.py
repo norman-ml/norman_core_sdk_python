@@ -6,7 +6,7 @@ from norman_objects.shared.models.model_projection import ModelProjection
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
 from norman_objects.shared.versions.model_version_preview import ModelVersionPreview
-from norman_utils_external.singleton import Singleton
+from norman_utils.singleton import Singleton
 from pydantic import TypeAdapter
 
 from norman_core.clients.http_client import HttpClient

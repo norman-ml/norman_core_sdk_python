@@ -1,4 +1,4 @@
-from norman_utils_external.singleton import Singleton
+from norman_utils.singleton import Singleton
 
 from norman_core.services.persist.capacity_usage import CapacityUsageService
 from norman_core.services.persist.invocations import Invocations

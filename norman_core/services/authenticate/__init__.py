@@ -1,4 +1,4 @@
-from norman_utils_external.singleton import Singleton
+from norman_utils.singleton import Singleton
 
 from norman_core.services.authenticate.accounts import Accounts
 from norman_core.services.authenticate.capacity import Capacity
