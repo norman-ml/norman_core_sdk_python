@@ -1,5 +1,6 @@
 from typing import Optional
 
+from norman_core.clients.http_client import HttpClient
 from norman_objects.shared.models.model import Model
 from norman_objects.shared.models.model_preview import ModelPreview
 from norman_objects.shared.models.model_projection import ModelProjection
@@ -8,8 +9,6 @@ from norman_objects.shared.security.sensitive import Sensitive
 from norman_objects.shared.versions.model_version_preview import ModelVersionPreview
 from norman_utils.singleton import Singleton
 from pydantic import TypeAdapter
-
-from norman_core.clients.http_client import HttpClient
 
 
 class Models(metaclass=Singleton):

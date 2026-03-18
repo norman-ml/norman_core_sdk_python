@@ -1,16 +1,15 @@
 from types import TracebackType
 from typing import Any, AsyncGenerator
 from typing import Optional, Type
-from typing_extensions import Unpack
 
 import httpx
 from httpx import Response
-from norman_objects.shared.security.sensitive import Sensitive
-from norman_utils.singleton import Singleton
-
 from norman_core._app_config import AppConfig
 from norman_core.clients.objects.request_kwargs import RequestKwargs
 from norman_core.clients.objects.response_encoding import ResponseEncoding
+from norman_objects.shared.security.sensitive import Sensitive
+from norman_utils.singleton import Singleton
+from typing_extensions import Unpack
 
 
 class HttpClient(metaclass=Singleton):

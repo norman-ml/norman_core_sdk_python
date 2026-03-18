@@ -1,12 +1,11 @@
 from typing import Optional
 
+from norman_core.clients.http_client import HttpClient
 from norman_objects.shared.invocations.invocation import Invocation
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
-from pydantic import TypeAdapter
-
 from norman_utils.singleton import Singleton
-from norman_core.clients.http_client import HttpClient
+from pydantic import TypeAdapter
 
 
 class Invocations(metaclass=Singleton):
