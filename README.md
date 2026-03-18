@@ -1,29 +1,29 @@
-# Norman Core SDK Overview
+# Norman API Overview
 
-The Norman Core SDK is the low-level foundational library that powers Norman inter-service communication and underlies the higher-level Norman SDK.
+The Norman API is the low-level foundational library that powers Norman inter-service communication and underlies the higher-level Norman SDK.
 
 For most use cases, we recommend using the high-level Norman SDK, which provides a simple interface with Norman and abstracts the underlying implementation details.
 
-The Core SDK is recommended for users who require fine-grained control over operation execution. It provides low-level utilities for HTTP and socket communication, as well as fully mapped direct access to every route exposed by the Norman backend.
+The direct Python API is recommended for users who require fine-grained control over operation execution. It provides low-level utilities for HTTP and socket communication, as well as fully mapped direct access to every route exposed by the Norman backend.
 
-The following example demonstrates a typical workflow which requires use of the Core SDK: manually authenticating to exchange an API key for an access token, applying specific query constraints, and extracting version metadata directly from the persistence layer.
+The following example demonstrates a typical workflow which requires use of the direct Python API: manually authenticating to exchange an API key for an access token, applying specific query constraints, and extracting version metadata directly from the persistence layer.
 
 
-## 1. Install the Norman Core SDK
+## 1. Install the Norman API
 
-To use the Norman Core API in Python, install the official Norman SDK using pip:
+To use the Norman API in Python, install the official Norman SDK using pip:
 
 ```bash
-pip install norman-core
+pip install norman-api
 ````
 
 
 ## 2. Signup and create an API key
 
-Once we have the Core SDK set up, we need to sign up to Norman and create our first API key. 
+Once we have the Python API set up, we need to sign up to Norman and create our first API key. 
 To do so we initialize the Signup class and provide it with a username of our choice.
 
-Notice that all API calls in the Core SDK must be within the context of an HTTPClient. 
+Notice that all API calls in the Python API must be within the context of an HTTPClient. 
 This allows granular control over session management, 
 and is more efficient than opening and closing new sessions for each call.
 
@@ -178,7 +178,7 @@ asyncio.run(model_build_status_coroutine)
 
 ## 5. Next steps
 
-This guide covers a single representative workflow using the Norman Core SDK.
-The Core SDK exposes many additional services and operations beyond the example shown here.
+This guide covers a single representative workflow using the Norman Python API.
+The API exposes many additional services and operations beyond the example shown here.
 
-For the full reference and detailed instructions, please visit our documentation at https://sdk.norman-ai.com/api/core.
+For the full reference and detailed instructions, please visit our documentation at https://sdk.norman-ai.com/api/core/core-overview.
