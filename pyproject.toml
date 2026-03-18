@@ -3,14 +3,15 @@ requires = ["flit_core==3.12.0"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "norman-core-sdk"
+name = "norman-api"
 version = "0.1.0"
 description = "Norman SDK"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "norman_objects @ git+https://github.com/norman-ml/norman_objects.git",
-    "norman_utils_external @ git+https://github.com/norman-ml/norman_utils_external.git",
+    "norman-exceptions",
+    "norman-objects",
+    "norman-utils",
 
     "aiofiles==24.1.0",
     "httpx==0.28.1",
@@ -19,12 +20,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "pytest==8.4.2",
-  "pytest-asyncio==1.2.0"
+    "pytest==8.4.2",
+    "pytest-asyncio==1.2.0"
 ]
 
 [tool.flit.module]
-name = "norman_core"
+name = "norman_api"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -41,4 +42,11 @@ markers = [
     "accounts: anything to do with account entities",
     "models: anything to do with model entities",
     "invocations: anything to do with invocation entities"
+]
+
+[tool.uv]
+override-dependencies = [
+    "norman-exceptions @ git+https://github.com/norman-ml/norman_exceptions.git@main",
+    "norman-objects @ git+https://github.com/norman-ml/norman_objects.git@main",
+    "norman-utils @ git+https://github.com/norman-ml/norman_utils.git@main",
 ]

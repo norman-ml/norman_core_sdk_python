@@ -1,7 +1,7 @@
 from norman_objects.shared.authentication.account_authentication_factors import AccountAuthenticationFactors
-from norman_utils_external.singleton import Singleton
+from norman_utils.singleton import Singleton
 
-from norman_core.clients.http_client import HttpClient
+from norman_api.clients.http_client import HttpClient
 
 
 class Factors(metaclass=Singleton):

@@ -2,9 +2,9 @@ from typing import AsyncIterator, Tuple
 
 import httpx
 from norman_objects.shared.security.sensitive import Sensitive
-from norman_utils_external.singleton import Singleton
+from norman_utils.singleton import Singleton
 
-from norman_core.clients.http_client import HttpClient, ResponseEncoding
+from norman_api.clients.http_client import HttpClient, ResponseEncoding
 
 
 class Retrieve(metaclass=Singleton):

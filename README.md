@@ -1,29 +1,29 @@
-# Norman Core SDK Overview
+# Norman API Overview
 
-The Norman Core SDK is the low-level foundational library that powers Norman inter-service communication and underlies the higher-level Norman SDK.
+The Norman API is the low-level foundational library that powers Norman inter-service communication and underlies the higher-level Norman SDK.
 
 For most use cases, we recommend using the high-level Norman SDK, which provides a simple interface with Norman and abstracts the underlying implementation details.
 
-The Core SDK is recommended for users who require fine-grained control over operation execution. It provides low-level utilities for HTTP and socket communication, as well as fully mapped direct access to every route exposed by the Norman backend.
+The direct Python API is recommended for users who require fine-grained control over operation execution. It provides low-level utilities for HTTP and socket communication, as well as fully mapped direct access to every route exposed by the Norman backend.
 
-The following example demonstrates a typical workflow which requires use of the Core SDK: manually authenticating to exchange an API key for an access token, applying specific query constraints, and extracting version metadata directly from the persistence layer.
+The following example demonstrates a typical workflow which requires use of the direct Python API: manually authenticating to exchange an API key for an access token, applying specific query constraints, and extracting version metadata directly from the persistence layer.
 
 
-## 1. Install the Norman Core SDK
+## 1. Install the Norman API
 
-To use the Norman Core API in Python, install the official Norman SDK using pip:
+To use the Norman API in Python, install the official Norman SDK using pip:
 
 ```bash
-pip install norman-core
+pip install norman-api
 ````
 
 
 ## 2. Signup and create an API key
 
-Once we have the Core SDK set up, we need to sign up to Norman and create our first API key. 
+Once we have the Python API set up, we need to sign up to Norman and create our first API key. 
 To do so we initialize the Signup class and provide it with a username of our choice.
 
-Notice that all API calls in the Core SDK must be within the context of an HTTPClient. 
+Notice that all API calls in the Python API must be within the context of an HTTPClient. 
 This allows granular control over session management, 
 and is more efficient than opening and closing new sessions for each call.
 
@@ -36,8 +36,8 @@ from norman_objects.services.authenticate.signup.signup_key_response import Sign
 from norman_objects.shared.accounts.account import Account
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.clients.http_client import HttpClient
-from norman_core.services.authenticate import Signup
+from norman_api.clients.http_client import HttpClient
+from norman_api.services.authenticate import Signup
 
 
 async def signup_to_norman() -> Tuple[Account, Sensitive[str]]:
@@ -59,6 +59,7 @@ async def signup_to_norman() -> Tuple[Account, Sensitive[str]]:
 
     # Return the account and API key to the caller
     return account, api_key
+
 
 signup_coroutine = signup_to_norman()
 asyncio.run(signup_coroutine)
@@ -85,8 +86,8 @@ from norman_objects.services.authenticate.login.api_key_login_request import Api
 from norman_objects.services.authenticate.login.login_response import LoginResponse
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_core.clients.http_client import HttpClient
-from norman_core.services.authenticate import Login
+from norman_api.clients.http_client import HttpClient
+from norman_api.services.authenticate import Login
 
 
 async def get_access_token() -> Sensitive[str]:
@@ -107,6 +108,7 @@ async def get_access_token() -> Sensitive[str]:
 
     # Return the access token to the caller
     return access_token
+
 
 access_token_coroutine = get_access_token()
 asyncio.run(access_token_coroutine)
@@ -131,12 +133,12 @@ from typing import List
 
 from norman_objects.shared.models.model_build_status import ModelBuildStatus
 from norman_objects.shared.models.model_preview import ModelPreview
-from norman_objects.shared.models.model_version_preview import ModelVersionPreview
 from norman_objects.shared.queries.query_constraints import QueryConstraints
 from norman_objects.shared.security.sensitive import Sensitive
+from norman_objects.shared.versions.model_version_preview import ModelVersionPreview
 
-from norman_core.clients.http_client import HttpClient
-from norman_core.services.persist import Models
+from norman_api.clients.http_client import HttpClient
+from norman_api.services.persist import Models
 
 
 async def get_model_build_status() -> List[ModelVersionPreview]:
@@ -163,7 +165,7 @@ async def get_model_build_status() -> List[ModelVersionPreview]:
         version
         for version in model_preview.versions
         if version.build_status == ModelBuildStatus.Completed
-        and version.active
+           and version.active
     ]
 
     # Return the model versions to the caller
@@ -176,7 +178,7 @@ asyncio.run(model_build_status_coroutine)
 
 ## 5. Next steps
 
-This guide covers a single representative workflow using the Norman Core SDK.
-The Core SDK exposes many additional services and operations beyond the example shown here.
+This guide covers a single representative workflow using the Norman Python API.
+The API exposes many additional services and operations beyond the example shown here.
 
-For the full reference and detailed instructions, please visit our documentation at https://sdk.norman-ai.com/api/core.
+For the full reference and detailed instructions, please visit our documentation at https://sdk.norman-ai.com/api/core/core-overview.

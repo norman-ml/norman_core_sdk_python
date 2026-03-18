@@ -3,10 +3,10 @@ from norman_objects.services.file_pull.requests.asset_download_request import As
 from norman_objects.services.file_pull.requests.input_download_request import InputDownloadRequest
 from norman_objects.services.file_pull.requests.output_download_request import OutputDownloadRequest
 from norman_objects.shared.security.sensitive import Sensitive
+from norman_utils.singleton import Singleton
 from pydantic import TypeAdapter
 
-from norman_utils_external.singleton import Singleton
-from norman_core.clients.http_client import HttpClient
+from norman_api.clients.http_client import HttpClient
 
 
 class FilePull(metaclass=Singleton):

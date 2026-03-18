@@ -4,9 +4,9 @@ from norman_objects.services.authenticate.register.register_password_request imp
 from norman_objects.services.authenticate.register.resend_email_verification_code_request import ResendEmailVerificationCodeRequest
 from norman_objects.shared.authentication.account_authentication_factors import AccountAuthenticationFactors
 from norman_objects.shared.security.sensitive import Sensitive
+from norman_utils.singleton import Singleton
 
-from norman_utils_external.singleton import Singleton
-from norman_core.clients.http_client import HttpClient
+from norman_api.clients.http_client import HttpClient
 
 
 class Register(metaclass=Singleton):
