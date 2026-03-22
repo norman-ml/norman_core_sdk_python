@@ -3,7 +3,9 @@
 import grpc
 import warnings
 
-from . import file_push_pb2 as file__push__pb2
+import asset_upload_request_pb2 as asset__upload__request__pb2
+import input_upload_request_pb2 as input__upload__request__pb2
+import upload_status_pb2 as upload__status__pb2
 
 GRPC_GENERATED_VERSION = '1.78.0'
 GRPC_VERSION = grpc.__version__
@@ -36,13 +38,13 @@ class FilePushServiceStub(object):
         """
         self.UploadAsset = channel.stream_unary(
                 '/norman.file_push.v2.FilePushService/UploadAsset',
-                request_serializer=file__push__pb2.AssetUploadRequest.SerializeToString,
-                response_deserializer=file__push__pb2.UploadStatus.FromString,
+                request_serializer=asset__upload__request__pb2.AssetUploadRequest.SerializeToString,
+                response_deserializer=upload__status__pb2.UploadStatus.FromString,
                 _registered_method=True)
         self.UploadInput = channel.stream_unary(
                 '/norman.file_push.v2.FilePushService/UploadInput',
-                request_serializer=file__push__pb2.InputUploadRequest.SerializeToString,
-                response_deserializer=file__push__pb2.UploadStatus.FromString,
+                request_serializer=input__upload__request__pb2.InputUploadRequest.SerializeToString,
+                response_deserializer=upload__status__pb2.UploadStatus.FromString,
                 _registered_method=True)
 
 
@@ -68,13 +70,13 @@ def add_FilePushServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'UploadAsset': grpc.stream_unary_rpc_method_handler(
                     servicer.UploadAsset,
-                    request_deserializer=file__push__pb2.AssetUploadRequest.FromString,
-                    response_serializer=file__push__pb2.UploadStatus.SerializeToString,
+                    request_deserializer=asset__upload__request__pb2.AssetUploadRequest.FromString,
+                    response_serializer=upload__status__pb2.UploadStatus.SerializeToString,
             ),
             'UploadInput': grpc.stream_unary_rpc_method_handler(
                     servicer.UploadInput,
-                    request_deserializer=file__push__pb2.InputUploadRequest.FromString,
-                    response_serializer=file__push__pb2.UploadStatus.SerializeToString,
+                    request_deserializer=input__upload__request__pb2.InputUploadRequest.FromString,
+                    response_serializer=upload__status__pb2.UploadStatus.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -102,8 +104,8 @@ class FilePushService(object):
             request_iterator,
             target,
             '/norman.file_push.v2.FilePushService/UploadAsset',
-            file__push__pb2.AssetUploadRequest.SerializeToString,
-            file__push__pb2.UploadStatus.FromString,
+            asset__upload__request__pb2.AssetUploadRequest.SerializeToString,
+            upload__status__pb2.UploadStatus.FromString,
             options,
             channel_credentials,
             insecure,
@@ -129,8 +131,8 @@ class FilePushService(object):
             request_iterator,
             target,
             '/norman.file_push.v2.FilePushService/UploadInput',
-            file__push__pb2.InputUploadRequest.SerializeToString,
-            file__push__pb2.UploadStatus.FromString,
+            input__upload__request__pb2.InputUploadRequest.SerializeToString,
+            upload__status__pb2.UploadStatus.FromString,
             options,
             channel_credentials,
             insecure,

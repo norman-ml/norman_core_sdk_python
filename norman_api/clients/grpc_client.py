@@ -5,7 +5,14 @@ import grpc
 from xxhash import xxh3_64
 
 from norman_core._app_config import AppConfig
-from norman_core.services.file_push.proto import file_push_pb2, file_push_pb2_grpc
+from norman_core.services.file_push.proto import file_push_pb2_grpc
+from norman_core.services.file_push.proto import asset_metadata_pb2
+from norman_core.services.file_push.proto import asset_upload_request_pb2
+from norman_core.services.file_push.proto import file_chunk_pb2
+from norman_core.services.file_push.proto import input_metadata_pb2
+from norman_core.services.file_push.proto import input_upload_request_pb2
+from norman_core.services.file_push.proto import upload_complete_pb2
+from norman_core.services.file_push.proto import upload_status_pb2
 
 
 class GrpcClient:
@@ -38,7 +45,7 @@ class GrpcClient:
     async def __aexit__(self, *args) -> None:
         await self.close()
 
-    async def upload_asset(self, token: str, account_id: str, model_id: str, version_id: str, asset_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None, file_size: int = None) -> file_push_pb2.UploadStatus:
+    async def upload_asset(self, token: str, account_id: str, model_id: str, version_id: str, asset_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None, file_size: int = None) -> upload_status_pb2.UploadStatus:
         if file_path is not None:
             path = Path(file_path)
             file_size = path.stat().st_size
@@ -50,8 +57,8 @@ class GrpcClient:
         else:
             raise ValueError("Provide either file_path or file_buffer")
 
-        metadata_msg = file_push_pb2.AssetUploadRequest(
-            metadata=file_push_pb2.AssetMetadata(
+        metadata_msg = asset_upload_request_pb2.AssetUploadRequest(
+            metadata=asset_metadata_pb2.AssetMetadata(
                 account_id=account_id,
                 model_id=model_id,
                 version_id=version_id,
@@ -69,18 +76,21 @@ class GrpcClient:
             async for chunk in data_source:
                 hasher.update(chunk)
                 if previous_chunk is not None:
-                    yield file_push_pb2.AssetUploadRequest(
-                        chunk=file_push_pb2.FileChunk(data=previous_chunk)
+                    yield asset_upload_request_pb2.AssetUploadRequest(
+                        chunk=file_chunk_pb2.FileChunk(data=previous_chunk)
                     )
                 previous_chunk = chunk
 
             if previous_chunk is not None:
-                yield file_push_pb2.AssetUploadRequest(
-                    chunk=file_push_pb2.FileChunk(
-                        data=previous_chunk,
-                        checksum=hasher.hexdigest()
-                    )
+                yield asset_upload_request_pb2.AssetUploadRequest(
+                    chunk=file_chunk_pb2.FileChunk(data=previous_chunk)
                 )
+
+            yield asset_upload_request_pb2.AssetUploadRequest(
+                complete=upload_complete_pb2.UploadComplete(
+                    client_checksum=hasher.hexdigest()
+                )
+            )
 
         call_metadata = [("authorization", f"Bearer {token}")]
         response = await self._stub.UploadAsset(
@@ -89,7 +99,7 @@ class GrpcClient:
         )
         return response
 
-    async def upload_input(self, token: str, account_id: str, model_id: str, version_id: str, invocation_id: str, input_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None, file_size: int = None) -> file_push_pb2.UploadStatus:
+    async def upload_input(self, token: str, account_id: str, model_id: str, version_id: str, invocation_id: str, input_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None, file_size: int = None) -> upload_status_pb2.UploadStatus:
         if file_path is not None:
             path = Path(file_path)
             file_size = path.stat().st_size
@@ -101,8 +111,8 @@ class GrpcClient:
         else:
             raise ValueError("Provide either file_path or file_buffer")
 
-        metadata_msg = file_push_pb2.InputUploadRequest(
-            metadata=file_push_pb2.InputMetadata(
+        metadata_msg = input_upload_request_pb2.InputUploadRequest(
+            metadata=input_metadata_pb2.InputMetadata(
                 account_id=account_id,
                 model_id=model_id,
                 version_id=version_id,
@@ -121,18 +131,21 @@ class GrpcClient:
             async for chunk in data_source:
                 hasher.update(chunk)
                 if previous_chunk is not None:
-                    yield file_push_pb2.InputUploadRequest(
-                        chunk=file_push_pb2.FileChunk(data=previous_chunk)
+                    yield input_upload_request_pb2.InputUploadRequest(
+                        chunk=file_chunk_pb2.FileChunk(data=previous_chunk)
                     )
                 previous_chunk = chunk
 
             if previous_chunk is not None:
-                yield file_push_pb2.InputUploadRequest(
-                    chunk=file_push_pb2.FileChunk(
-                        data=previous_chunk,
-                        checksum=hasher.hexdigest()
-                    )
+                yield input_upload_request_pb2.InputUploadRequest(
+                    chunk=file_chunk_pb2.FileChunk(data=previous_chunk)
                 )
+
+            yield input_upload_request_pb2.InputUploadRequest(
+                complete=upload_complete_pb2.UploadComplete(
+                    client_checksum=hasher.hexdigest()
+                )
+            )
 
         call_metadata = [("authorization", f"Bearer {token}")]
         response = await self._stub.UploadInput(
