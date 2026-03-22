@@ -3,9 +3,9 @@
 import grpc
 import warnings
 
-import asset_upload_request_pb2 as asset__upload__request__pb2
-import input_upload_request_pb2 as input__upload__request__pb2
-import upload_status_pb2 as upload__status__pb2
+from . import asset_upload_request_pb2 as asset__upload__request__pb2
+from . import input_upload_request_pb2 as input__upload__request__pb2
+from . import upload_status_pb2 as upload__status__pb2
 
 GRPC_GENERATED_VERSION = '1.78.0'
 GRPC_VERSION = grpc.__version__

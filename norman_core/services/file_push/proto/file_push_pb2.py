@@ -22,9 +22,9 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-import asset_upload_request_pb2 as asset__upload__request__pb2
-import input_upload_request_pb2 as input__upload__request__pb2
-import upload_status_pb2 as upload__status__pb2
+from . import asset_upload_request_pb2 as asset__upload__request__pb2
+from . import input_upload_request_pb2 as input__upload__request__pb2
+from . import upload_status_pb2 as upload__status__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0f\x66ile_push.proto\x12\x13norman.file_push.v2\x1a\x1a\x61sset_upload_request.proto\x1a\x1ainput_upload_request.proto\x1a\x13upload_status.proto2\xcb\x01\n\x0f\x46ilePushService\x12[\n\x0bUploadAsset\x12\'.norman.file_push.v2.AssetUploadRequest\x1a!.norman.file_push.v2.UploadStatus(\x01\x12[\n\x0bUploadInput\x12\'.norman.file_push.v2.InputUploadRequest\x1a!.norman.file_push.v2.UploadStatus(\x01\x62\x06proto3')

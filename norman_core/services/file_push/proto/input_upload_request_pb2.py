@@ -22,9 +22,9 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-import input_metadata_pb2 as input__metadata__pb2
-import file_chunk_pb2 as file__chunk__pb2
-import upload_complete_pb2 as upload__complete__pb2
+from . import input_metadata_pb2 as input__metadata__pb2
+from . import file_chunk_pb2 as file__chunk__pb2
+from . import upload_complete_pb2 as upload__complete__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1ainput_upload_request.proto\x12\x13norman.file_push.v2\x1a\x14input_metadata.proto\x1a\x10\x66ile_chunk.proto\x1a\x15upload_complete.proto\"\xc1\x01\n\x12InputUploadRequest\x12\x36\n\x08metadata\x18\x01 \x01(\x0b\x32\".norman.file_push.v2.InputMetadataH\x00\x12/\n\x05\x63hunk\x18\x02 \x01(\x0b\x32\x1e.norman.file_push.v2.FileChunkH\x00\x12\x37\n\x08\x63omplete\x18\x03 \x01(\x0b\x32#.norman.file_push.v2.UploadCompleteH\x00\x42\t\n\x07payloadb\x06proto3')

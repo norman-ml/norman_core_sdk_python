@@ -3,8 +3,8 @@ from pathlib import Path
 
 from norman_objects.shared.security.sensitive import Sensitive
 
-from norman_utils_external.singleton import Singleton
-from norman_core.clients.grpc_client import GrpcClient
+from norman_utils.singleton import Singleton
+from norman_api.clients.grpc_client import GrpcClient
 
 
 class FilePush(metaclass=Singleton):

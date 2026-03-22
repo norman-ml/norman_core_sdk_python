@@ -4,7 +4,7 @@ from pathlib import Path
 import grpc
 from xxhash import xxh3_64
 
-from norman_core._app_config import AppConfig
+from norman_api._app_config import AppConfig
 from norman_core.services.file_push.proto import file_push_pb2_grpc
 from norman_core.services.file_push.proto import asset_metadata_pb2
 from norman_core.services.file_push.proto import asset_upload_request_pb2
