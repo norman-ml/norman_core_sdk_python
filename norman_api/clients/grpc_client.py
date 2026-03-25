@@ -5,14 +5,13 @@ import grpc
 from xxhash import xxh3_64
 
 from norman_api._app_config import AppConfig
-from norman_core.services.file_push.proto import file_push_pb2_grpc
-from norman_core.services.file_push.proto import asset_metadata_pb2
-from norman_core.services.file_push.proto import asset_upload_request_pb2
-from norman_core.services.file_push.proto import file_chunk_pb2
-from norman_core.services.file_push.proto import input_metadata_pb2
-from norman_core.services.file_push.proto import input_upload_request_pb2
-from norman_core.services.file_push.proto import upload_complete_pb2
-from norman_core.services.file_push.proto import upload_status_pb2
+from norman_core.services.file_push.proto.messages.assets import asset_metadata_pb2
+from norman_core.services.file_push.proto.messages.assets import asset_upload_request_pb2
+from norman_core.services.file_push.proto.messages.inputs import input_metadata_pb2
+from norman_core.services.file_push.proto.messages.inputs import input_upload_request_pb2
+from norman_core.services.file_push.proto.messages.shared import file_chunk_pb2
+from norman_core.services.file_push.proto.messages.shared import upload_complete_pb2
+from norman_core.services.file_push.proto.services import file_push_pb2_grpc
 
 
 class GrpcClient:

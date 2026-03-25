@@ -3,9 +3,9 @@
 import grpc
 import warnings
 
-from . import asset_upload_request_pb2 as asset__upload__request__pb2
-from . import input_upload_request_pb2 as input__upload__request__pb2
-from . import upload_status_pb2 as upload__status__pb2
+from messages.assets import asset_upload_request_pb2 as messages_dot_assets_dot_asset__upload__request__pb2
+from messages.inputs import input_upload_request_pb2 as messages_dot_inputs_dot_input__upload__request__pb2
+from messages.shared import upload_response_pb2 as messages_dot_shared_dot_upload__response__pb2
 
 GRPC_GENERATED_VERSION = '1.78.0'
 GRPC_VERSION = grpc.__version__
@@ -20,7 +20,7 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + ' but the generated code in file_push_pb2_grpc.py depends on'
+        + ' but the generated code in services/file_push_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -38,13 +38,13 @@ class FilePushServiceStub(object):
         """
         self.UploadAsset = channel.stream_unary(
                 '/norman.file_push.v2.FilePushService/UploadAsset',
-                request_serializer=asset__upload__request__pb2.AssetUploadRequest.SerializeToString,
-                response_deserializer=upload__status__pb2.UploadStatus.FromString,
+                request_serializer=messages_dot_assets_dot_asset__upload__request__pb2.AssetUploadRequest.SerializeToString,
+                response_deserializer=messages_dot_shared_dot_upload__response__pb2.UploadResponse.FromString,
                 _registered_method=True)
         self.UploadInput = channel.stream_unary(
                 '/norman.file_push.v2.FilePushService/UploadInput',
-                request_serializer=input__upload__request__pb2.InputUploadRequest.SerializeToString,
-                response_deserializer=upload__status__pb2.UploadStatus.FromString,
+                request_serializer=messages_dot_inputs_dot_input__upload__request__pb2.InputUploadRequest.SerializeToString,
+                response_deserializer=messages_dot_shared_dot_upload__response__pb2.UploadResponse.FromString,
                 _registered_method=True)
 
 
@@ -70,13 +70,13 @@ def add_FilePushServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'UploadAsset': grpc.stream_unary_rpc_method_handler(
                     servicer.UploadAsset,
-                    request_deserializer=asset__upload__request__pb2.AssetUploadRequest.FromString,
-                    response_serializer=upload__status__pb2.UploadStatus.SerializeToString,
+                    request_deserializer=messages_dot_assets_dot_asset__upload__request__pb2.AssetUploadRequest.FromString,
+                    response_serializer=messages_dot_shared_dot_upload__response__pb2.UploadResponse.SerializeToString,
             ),
             'UploadInput': grpc.stream_unary_rpc_method_handler(
                     servicer.UploadInput,
-                    request_deserializer=input__upload__request__pb2.InputUploadRequest.FromString,
-                    response_serializer=upload__status__pb2.UploadStatus.SerializeToString,
+                    request_deserializer=messages_dot_inputs_dot_input__upload__request__pb2.InputUploadRequest.FromString,
+                    response_serializer=messages_dot_shared_dot_upload__response__pb2.UploadResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -104,8 +104,8 @@ class FilePushService(object):
             request_iterator,
             target,
             '/norman.file_push.v2.FilePushService/UploadAsset',
-            asset__upload__request__pb2.AssetUploadRequest.SerializeToString,
-            upload__status__pb2.UploadStatus.FromString,
+            messages_dot_assets_dot_asset__upload__request__pb2.AssetUploadRequest.SerializeToString,
+            messages_dot_shared_dot_upload__response__pb2.UploadResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -131,8 +131,8 @@ class FilePushService(object):
             request_iterator,
             target,
             '/norman.file_push.v2.FilePushService/UploadInput',
-            input__upload__request__pb2.InputUploadRequest.SerializeToString,
-            upload__status__pb2.UploadStatus.FromString,
+            messages_dot_inputs_dot_input__upload__request__pb2.InputUploadRequest.SerializeToString,
+            messages_dot_shared_dot_upload__response__pb2.UploadResponse.FromString,
             options,
             channel_credentials,
             insecure,

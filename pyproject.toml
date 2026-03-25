@@ -48,7 +48,7 @@ markers = [
 
 [tool.uv]
 override-dependencies = [
-    "norman-exceptions @ git+https://github.com/norman-ml/norman_exceptions.git@main",
-    "norman-objects @ git+https://github.com/norman-ml/norman_objects.git@main",
-    "norman-utils @ git+https://github.com/norman-ml/norman_utils.git@main",
+    "norman-exceptions @ git+https://github.com/norman-ml/norman_exceptions.git@development",
+    "norman-objects @ git+https://github.com/norman-ml/norman_objects.git@development",
+    "norman-utils @ git+https://github.com/norman-ml/norman_utils.git@development",
 ]
