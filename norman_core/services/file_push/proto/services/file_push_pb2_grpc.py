@@ -27,7 +27,7 @@ if _version_not_supported:
     )
 
 
-class FilePushServiceStub(object):
+class FilePushStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -37,18 +37,18 @@ class FilePushServiceStub(object):
             channel: A grpc.Channel.
         """
         self.UploadAsset = channel.stream_unary(
-                '/norman.file_push.v2.FilePushService/UploadAsset',
+                '/norman.file_push.v2.FilePush/UploadAsset',
                 request_serializer=messages_dot_assets_dot_asset__upload__request__pb2.AssetUploadRequest.SerializeToString,
                 response_deserializer=messages_dot_shared_dot_upload__response__pb2.UploadResponse.FromString,
                 _registered_method=True)
         self.UploadInput = channel.stream_unary(
-                '/norman.file_push.v2.FilePushService/UploadInput',
+                '/norman.file_push.v2.FilePush/UploadInput',
                 request_serializer=messages_dot_inputs_dot_input__upload__request__pb2.InputUploadRequest.SerializeToString,
                 response_deserializer=messages_dot_shared_dot_upload__response__pb2.UploadResponse.FromString,
                 _registered_method=True)
 
 
-class FilePushServiceServicer(object):
+class FilePushServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def UploadAsset(self, request_iterator, context):
@@ -66,7 +66,7 @@ class FilePushServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_FilePushServiceServicer_to_server(servicer, server):
+def add_FilePushServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'UploadAsset': grpc.stream_unary_rpc_method_handler(
                     servicer.UploadAsset,
@@ -80,13 +80,13 @@ def add_FilePushServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'norman.file_push.v2.FilePushService', rpc_method_handlers)
+            'norman.file_push.v2.FilePush', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('norman.file_push.v2.FilePushService', rpc_method_handlers)
+    server.add_registered_method_handlers('norman.file_push.v2.FilePush', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class FilePushService(object):
+class FilePush(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -103,7 +103,7 @@ class FilePushService(object):
         return grpc.experimental.stream_unary(
             request_iterator,
             target,
-            '/norman.file_push.v2.FilePushService/UploadAsset',
+            '/norman.file_push.v2.FilePush/UploadAsset',
             messages_dot_assets_dot_asset__upload__request__pb2.AssetUploadRequest.SerializeToString,
             messages_dot_shared_dot_upload__response__pb2.UploadResponse.FromString,
             options,
@@ -130,7 +130,7 @@ class FilePushService(object):
         return grpc.experimental.stream_unary(
             request_iterator,
             target,
-            '/norman.file_push.v2.FilePushService/UploadInput',
+            '/norman.file_push.v2.FilePush/UploadInput',
             messages_dot_inputs_dot_input__upload__request__pb2.InputUploadRequest.SerializeToString,
             messages_dot_shared_dot_upload__response__pb2.UploadResponse.FromString,
             options,

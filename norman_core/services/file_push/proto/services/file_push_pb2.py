@@ -27,13 +27,13 @@ from messages.inputs import input_upload_request_pb2 as messages_dot_inputs_dot_
 from messages.shared import upload_response_pb2 as messages_dot_shared_dot_upload__response__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18services/file_push.proto\x12\x13norman.file_push.v2\x1a*messages/assets/asset_upload_request.proto\x1a*messages/inputs/input_upload_request.proto\x1a%messages/shared/upload_response.proto2\xcf\x01\n\x0f\x46ilePushService\x12]\n\x0bUploadAsset\x12\'.norman.file_push.v2.AssetUploadRequest\x1a#.norman.file_push.v2.UploadResponse(\x01\x12]\n\x0bUploadInput\x12\'.norman.file_push.v2.InputUploadRequest\x1a#.norman.file_push.v2.UploadResponse(\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18services/file_push.proto\x12\x13norman.file_push.v2\x1a*messages/assets/asset_upload_request.proto\x1a*messages/inputs/input_upload_request.proto\x1a%messages/shared/upload_response.proto2\xc8\x01\n\x08\x46ilePush\x12]\n\x0bUploadAsset\x12\'.norman.file_push.v2.AssetUploadRequest\x1a#.norman.file_push.v2.UploadResponse(\x01\x12]\n\x0bUploadInput\x12\'.norman.file_push.v2.InputUploadRequest\x1a#.norman.file_push.v2.UploadResponse(\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'services.file_push_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_FILEPUSHSERVICE']._serialized_start=177
-  _globals['_FILEPUSHSERVICE']._serialized_end=384
+  _globals['_FILEPUSH']._serialized_start=177
+  _globals['_FILEPUSH']._serialized_end=377
 # @@protoc_insertion_point(module_scope)

@@ -29,7 +29,7 @@ class GrpcClient:
             self._server_address,
             grpc.ssl_channel_credentials()
         )
-        self._stub = file_push_pb2_grpc.FilePushServiceStub(self._channel)
+        self._stub = file_push_pb2_grpc.FilePushStub(self._channel)
 
     async def close(self) -> None:
         if self._channel is not None:
