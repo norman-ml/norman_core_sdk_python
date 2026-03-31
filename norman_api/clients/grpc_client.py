@@ -5,9 +5,9 @@ import grpc
 from xxhash import xxh3_64
 
 from norman_api._app_config import AppConfig
-from norman_core.services.file_push.proto.messages.assets import asset_metadata_pb2
+from norman_core.services.file_push.proto.messages.assets import asset_identifiers_pb2
 from norman_core.services.file_push.proto.messages.assets import asset_upload_request_pb2
-from norman_core.services.file_push.proto.messages.inputs import input_metadata_pb2
+from norman_core.services.file_push.proto.messages.inputs import input_identifiers_pb2
 from norman_core.services.file_push.proto.messages.inputs import input_upload_request_pb2
 from norman_core.services.file_push.proto.messages.shared import file_chunk_pb2
 from norman_core.services.file_push.proto.messages.shared import upload_complete_pb2
@@ -44,30 +44,26 @@ class GrpcClient:
     async def __aexit__(self, *args) -> None:
         await self.close()
 
-    async def upload_asset(self, token: str, account_id: str, model_id: str, version_id: str, asset_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None, file_size: int = None) -> upload_status_pb2.UploadStatus:
+    async def upload_asset(self, token: str, account_id: str, model_id: str, version_id: str, asset_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None) -> None:
         if file_path is not None:
             path = Path(file_path)
-            file_size = path.stat().st_size
             data_source = self._read_file(path)
         elif file_buffer is not None:
-            if file_size is None:
-                file_size = len(file_buffer)
             data_source = self._read_buffer(file_buffer)
         else:
             raise ValueError("Provide either file_path or file_buffer")
 
-        metadata_msg = asset_upload_request_pb2.AssetUploadRequest(
-            metadata=asset_metadata_pb2.AssetMetadata(
+        identifiers_msg = asset_upload_request_pb2.AssetUploadRequest(
+            identifiers=asset_identifiers_pb2.AssetIdentifiers(
                 account_id=account_id,
                 model_id=model_id,
                 version_id=version_id,
-                asset_id=asset_id,
-                file_size_in_bytes=file_size
+                asset_id=asset_id
             )
         )
 
         async def request_iterator():
-            yield metadata_msg
+            yield identifiers_msg
 
             hasher = xxh3_64()
             previous_chunk = None
@@ -92,37 +88,32 @@ class GrpcClient:
             )
 
         call_metadata = [("authorization", f"Bearer {token}")]
-        response = await self._stub.UploadAsset(
+        await self._stub.UploadAsset(
             request_iterator(),
             metadata=call_metadata
         )
-        return response
 
-    async def upload_input(self, token: str, account_id: str, model_id: str, version_id: str, invocation_id: str, input_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None, file_size: int = None) -> upload_status_pb2.UploadStatus:
+    async def upload_input(self, token: str, account_id: str, model_id: str, version_id: str, invocation_id: str, input_id: str, file_path: Union[str, Path] = None, file_buffer: bytes = None) -> None:
         if file_path is not None:
             path = Path(file_path)
-            file_size = path.stat().st_size
             data_source = self._read_file(path)
         elif file_buffer is not None:
-            if file_size is None:
-                file_size = len(file_buffer)
             data_source = self._read_buffer(file_buffer)
         else:
             raise ValueError("Provide either file_path or file_buffer")
 
-        metadata_msg = input_upload_request_pb2.InputUploadRequest(
-            metadata=input_metadata_pb2.InputMetadata(
+        identifiers_msg = input_upload_request_pb2.InputUploadRequest(
+            identifiers=input_identifiers_pb2.InputIdentifiers(
                 account_id=account_id,
                 model_id=model_id,
                 version_id=version_id,
                 invocation_id=invocation_id,
-                input_id=input_id,
-                file_size_in_bytes=file_size
+                input_id=input_id
             )
         )
 
         async def request_iterator():
-            yield metadata_msg
+            yield identifiers_msg
 
             hasher = xxh3_64()
             previous_chunk = None
@@ -147,11 +138,10 @@ class GrpcClient:
             )
 
         call_metadata = [("authorization", f"Bearer {token}")]
-        response = await self._stub.UploadInput(
+        await self._stub.UploadInput(
             request_iterator(),
             metadata=call_metadata
         )
-        return response
 
     @staticmethod
     async def _read_file(path: Path) -> AsyncIterator[bytes]:
