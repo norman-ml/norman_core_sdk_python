@@ -15,7 +15,7 @@ dependencies = [
 
     "aiofiles==24.1.0",
     "httpx==0.28.1",
-    "xxhash==3.5.0"
+    "xxhash==3.6.0"
 ]
 
 [project.optional-dependencies]

@@ -19,15 +19,15 @@ class FilePull(metaclass=Singleton):
 
     async def submit_asset_links(self, token: Sensitive[str], download_request: AssetDownloadRequest) -> list[str] :
         json = download_request.model_dump(mode="json")
-        response = await self._http_client.post("file-pull/upload/assets", token, json=json)
+        response = await self._http_client.post("file-pull/download/assets", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)
 
     async def submit_input_links(self, token: Sensitive[str], download_request: InputDownloadRequest) -> list[str]:
         json = download_request.model_dump(mode="json")
-        response = await self._http_client.post("file-pull/upload/inputs", token, json=json)
+        response = await self._http_client.post("file-pull/download/inputs", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)
 
     async def submit_output_links(self, token: Sensitive[str], download_request: OutputDownloadRequest) -> list[str]:
         json = download_request.model_dump(mode="json")
-        response = await self._http_client.post("file-pull/upload/outputs", token, json=json)
+        response = await self._http_client.post("file-pull/download/outputs", token, json=json)
         return TypeAdapter(list[str]).validate_python(response)

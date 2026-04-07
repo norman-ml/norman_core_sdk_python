@@ -26,6 +26,11 @@ class Models(metaclass=Singleton):
         response = await self._http_client.post("persist/models/previews/get", token, json=json)
         return TypeAdapter(dict[str, ModelPreview]).validate_python(response)
 
+    async def get_model_projections(self, token: Sensitive[str], constraint: Optional[QueryConstraints] = None) -> dict[str, ModelProjection]:
+        json = constraint.model_dump(mode="json")
+        response = await self._http_client.post("persist/models/projections/get", token, json=json)
+        return TypeAdapter(dict[str, ModelProjection]).validate_python(response)
+
     async def create_models(self, token: Sensitive[str], models: list[Model]) -> dict[str, Model]:
         json = None
         if models is not None:

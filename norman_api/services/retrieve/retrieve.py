@@ -11,14 +11,14 @@ class Retrieve(metaclass=Singleton):
     def __init__(self) -> None:
         self._http_client = HttpClient()
 
-    async def get_model_asset(self, token: Sensitive[str], account_id: str, version_id: str, asset_id: str) -> Tuple[httpx.Headers, AsyncIterator[bytes]]:
-        endpoint = f"retrieve/asset/{account_id}/{version_id}/{asset_id}"
+    async def get_model_asset(self, token: Sensitive[str], account_id: str, model_id: str, version_id: str, asset_id: str) -> Tuple[httpx.Headers, AsyncIterator[bytes]]:
+        endpoint = f"retrieve/asset/{account_id}/{model_id}/{version_id}/{asset_id}"
         return await self._http_client.get(endpoint, token, response_encoding=ResponseEncoding.Iterator)
 
-    async def get_invocation_input(self, token: Sensitive[str], account_id: str, version_id: str, invocation_id: str, input_id: str) -> Tuple[httpx.Headers, AsyncIterator[bytes]]:
-        endpoint = f"retrieve/input/{account_id}/{version_id}/{invocation_id}/{input_id}"
+    async def get_invocation_input(self, token: Sensitive[str], account_id: str, model_id: str, version_id: str, invocation_id: str, input_id: str) -> Tuple[httpx.Headers, AsyncIterator[bytes]]:
+        endpoint = f"retrieve/input/{account_id}/{model_id}/{version_id}/{invocation_id}/{input_id}"
         return await self._http_client.get(endpoint, token, response_encoding=ResponseEncoding.Iterator)
 
-    async def get_invocation_output(self, token: Sensitive[str], account_id: str, version_id: str, invocation_id: str, output_id: str) -> Tuple[httpx.Headers, AsyncIterator[bytes]]:
-        endpoint = f"retrieve/output/{account_id}/{version_id}/{invocation_id}/{output_id}"
+    async def get_invocation_output(self, token: Sensitive[str], account_id: str, model_id: str, version_id: str, invocation_id: str, output_id: str) -> Tuple[httpx.Headers, AsyncIterator[bytes]]:
+        endpoint = f"retrieve/output/{account_id}/{model_id}/{version_id}/{invocation_id}/{output_id}"
         return await self._http_client.get(endpoint, token, response_encoding=ResponseEncoding.Iterator)
