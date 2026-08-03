@@ -118,7 +118,7 @@ venv.bak/
 .ropeproject
 
 # mkdocs documentation
-/site
+site/
 
 # mypy
 .mypy_cache/
@@ -129,10 +129,10 @@ dmypy.json
 .pyre/
 
 # Pycharm
-/.idea/
+.idea/
 
 # Other exclusions
-/.aws-sam/
+.aws-sam/
 # Generated protobuf files
 *_pb2.py
 *_pb2_grpc.py
